@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBot</title>
+    <link rel="shortcut icon" type="image/x-icon" href="final-chatbot-logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Sign In</h2>
+        <form class="signInForm">
+          <div class="inputs">
+              <input placeholder="Email" class="input" type="email">
+              <input placeholder="Password" class="input" type="password">
+          <div class="checkbox-container">
+              <label class="checkbox">
+              <input type="checkbox" id="checkbox">
+              </label>
+              <label for="checkbox" class="checkbox-text">Remember me</label>
+          </div>
+          <button class="sigin-btns">Submit</button>
+          <a class="forget" href="#">Forget password ?</a>
+          <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
+          </div>
+      </form>
+    </div>
+</div>
+
+<div id="myModal1" class="modal1">
+  <!-- Modal content -->
+  <div class="modal-content">
+      <span class="close1">&times;</span>
+      <section class="about-section">
+        <div class="about-container">
+            <h2>About Rajasthan Technical College Enquiry Chatbot</h2>
+            <p>Welcome to the Rajasthan Technical College Enquiry Chatbot! Whether you're exploring engineering, IT, or other technical fields, we're here to guide you. Get instant information on admissions, courses, fees, and more right from the comfort of your device. Let's start your journey toward a successful career in Rajasthan's top technical institutions!, our chatbot is here to assist you 24/7.</p>
+            <h3>-- Key Features --</h3>
+            <ul class="features-list">
+                <li>Instant Information on Rajasthan Technical Colleges</li>
+                <li>Admissions and Fees Guidance</li>
+                <li>Course Availability and Structure Details</li>
+                <li>Alumni Insights and Placement Records</li>
+                <li>Real-time and Personalized Responses</li>
+            </ul>
+        </div>
+  </div>
+</div>
+
+
+    <!-- Settings Menu -->
+    <div id="settingsMenu" class="settings-menu">
+      <div class="menu-header">
+          <h4>Settings</h4>
+          <span class="close-btn" id="closeMenu">&times;</span>
+      </div>
+      <div class="menu-content">
+      
+          <div class="form-group">
+            <label for="shareButton">Share</label>
+              <button id="shareButton" class="btn-primary"><img src="share-icon.png" alt="Share icon"></button>
+          </div>
+          <div class="form-group">
+            <label for="logoutButton">LogOut</label>
+              <button id="logoutButton" class="btn-danger"><img src="logout-icon.png" alt="logout icon"></button>
+          </div>
+      </div>
+  </div>
+
+   <!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+          <!-- Sidebar Toggle Button -->
+
+  <div class="sidebar-heading">
+            <button id="sidebar-toggle" onclick="toggleSidebar()" class="sidebar-tog" ><i class="ri-menu-fill"></i></button>
+  <h2 class="setting" id="settingsButton"><img src="setting.png" alt="setting logo" class="setting-icon"></h2>
+          </div>
+          <div class="sidebar-logo">
+            <img src="final-chatbot-logo.png" alt="chatbot logo" class="sidebar-head-logo">
+          </div>
+  
+  <div class="sections">
+    <div class="sidebar-section" id="today-section">
+      <h3 style="padding: 8px;">Recent</h3>
+      <div class="message-list" id="today-messages"></div>
+  </div>
+  </div>
+  <div class="about-chatbot">
+    <div class="form-group">
+      <label for="languageSelect">Select Language</label>
+      <select id="languageSelect">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="mr">Rajasthani</option>
+      </select>
+  </div>
+  <div class="form-group">
+    <label for="themeSelect">Select Theme</label>
+    <select id="themeSelect">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="system">System</option>
+    </select>
+</div>
+    <button class="about-btn" id="openModalButton1">ABOUT</button>
+  </div>
+</div>
+    
+    <nav class="navbar">
+        <div class="logo">
+          <!-- Sidebar Toggle Button -->
+          <button id="sidebar-toggle" onclick="toggleSidebar()"><i class="ri-menu-fill"></i></button>
+            <a href="index.html" class="vidhur-name">VIDHUR</a>
+        </div>
+        <div class="features">
+          <button id="newChatButton" style="border: 1px solid black;"><i class="ri-chat-new-line"> New chat</i></button>
+          <button>Virtual College Tour</button>
+          <button>Financial Aid Calculator</button>
+          <button>Compare Tool</button>
+        </div>
+        <button class="hamburger" onclick="toggleMenu()"><i class="ri-arrow-drop-down-fill"></i></button>
+        <div class="sign-btn">
+            <a href="#" id="openModalButton">Sign In</a>
+        </div>
+    </nav>
+
+    <!-- This is code for chatbot interface -->
+    <div class="chat-container" id="chat-container">
+        <div class="chat-box" id="chatBox" style="display: none;">
+            <!-- Messages will be appended here -->
+        </div>
+        
+        <div id="welcome-page">
+          <img src="final-chatbot-logo.png" alt="welcome-logo" class="welcome-logo">
+          <h3>"Your Gateway to Rajasthan's Best Institutions."</h3>
+          <p style="font-size: 14px;">Get quick and latest info about the top technical institutions under DTE Rajasthan. Let's dive in to find your perfect college match.</p>
+          
+          <div id="suggestions">
+          <div class="card">
+            <img src="collage.png"  alt="Collages Logo">
+            <a href="#" class="suggestion" data-prompt="college">Which are the Top 5 colleges in Rajasthan? on the basis of placement, result and Good Faclities.</a>
+          </div>
+          <div class="card">
+            <img src="degree.png" alt="degree Logo">
+            <a href="#" class="suggestion" data-prompt="college">Does Government Polytechnic College, Ajmer currently offer distance education courses for students</a>
+          </div>
+          <div class="card">
+            <img src="fees.png" alt="fees Logo">
+            <a href="#" class="suggestion" data-prompt="college">What is the annual fees for computer engineering at Government Polytechnic College, Ajmer?</a>
+          </div>
+          <div class="card">
+            <img src="alumni.png" alt="alumni Logo">
+            <a href="#" class="suggestion" data-prompt="college">What is the average package offered at Shri Gokul Verma Government Polytechnic College,Bharatpur?</a>
+          </div>
+        </div>
+        </div>
+        <button id="scroll-btn" onclick="scrollToBottom()">↓</button>
+        <div class="popover-cont">Speak</div>
+        <div class="message-input">
+          <button class="voiceBtn" id="voiceBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0001 1C14.7615 1 17.0001 3.23858 17.0001 6V12C17.0001 14.7614 14.7615 17 12.0001 17C9.23865 17 7.00008 14.7614 7.00008 12V6C7.00008 3.23858 9.23865 1 12.0001 1ZM2.19238 13.9615L4.15392 13.5692C4.88321 17.2361 8.11888 20 12.0001 20C15.8813 20 19.1169 17.2361 19.8462 13.5692L21.8078 13.9615C20.8961 18.5452 16.8516 22 12.0001 22C7.14858 22 3.104 18.5452 2.19238 13.9615Z"></path></svg></button>
+          
+            <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+            <!-- <button onclick="sendMessage()">Send</button> -->
+            <button id="send-btn" onclick="sendMessage()">
+                <svg ...> <!-- SVG Icon --> </svg>
+                <div class="svg-wrapper-1">
+                  <div class="svg-wrapper">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="20"
+                      height="20"
+                    >
+                      <path fill="none" d="M0 0h24v24H0z"></path>
+                      <path
+                        fill="currentColor"
+                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              </button>
+        </div>
+        
+    </div>
+
+    <script src="chatbot.js"></script>
+</body>
+<footer>
+  <p>&copy; This chatbot is generated by DataDynamos!!</p>
+</footer>
+</html>
