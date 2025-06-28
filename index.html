@@ -1,198 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChatBot</title>
-    <link rel="shortcut icon" type="image/x-icon" href="final-chatbot-logo.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" referrerpolicy="no-referrer" />
-</head>
-<body>
-
-  <div id="myModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Sign In</h2>
-        <form class="signInForm">
-          <div class="inputs">
-              <input placeholder="Email" class="input" type="email">
-              <input placeholder="Password" class="input" type="password">
-          <div class="checkbox-container">
-              <label class="checkbox">
-              <input type="checkbox" id="checkbox">
-              </label>
-              <label for="checkbox" class="checkbox-text">Remember me</label>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="final-chatbot-logo.png"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css"
+      referrerpolicy="no-referrer"
+    />
+    <!-- Markdown parsing library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Pinwheel loader library -->
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/pinwheel.js"
+    ></script>
+  </head>
+  <body>
+    <div id="myModal1" class="modal1">
+      <!-- Enhanced About Modal -->
+      <div class="modal-content about-modal">
+        <div class="modal-header">
+          <div class="header-content">
+            <img
+              src="final-chatbot-logo.png"
+              alt="VIDHUR AI Logo"
+              class="modal-logo"
+            />
+            <div class="header-text">
+              <h2>VIDHUR AI</h2>
+              <p class="subtitle">Pune Engineering College Assistant</p>
+            </div>
           </div>
-          <button class="sigin-btns">Submit</button>
-          <a class="forget" href="#">Forget password ?</a>
-          <p class="signup-link">Don't have an account? <a href="#">Sign up</a></p>
-          </div>
-      </form>
-    </div>
-</div>
-
-<div id="myModal1" class="modal1">
-  <!-- Modal content -->
-  <div class="modal-content">
-      <span class="close1">&times;</span>
-      <section class="about-section">
-        <div class="about-container">
-            <h2>About Rajasthan Technical College Enquiry Chatbot</h2>
-            <p>Welcome to the Rajasthan Technical College Enquiry Chatbot! Whether you're exploring engineering, IT, or other technical fields, we're here to guide you. Get instant information on admissions, courses, fees, and more right from the comfort of your device. Let's start your journey toward a successful career in Rajasthan's top technical institutions!, our chatbot is here to assist you 24/7.</p>
-            <h3>-- Key Features --</h3>
-            <ul class="features-list">
-                <li>Instant Information on Rajasthan Technical Colleges</li>
-                <li>Admissions and Fees Guidance</li>
-                <li>Course Availability and Structure Details</li>
-                <li>Alumni Insights and Placement Records</li>
-                <li>Real-time and Personalized Responses</li>
-            </ul>
+          <span class="close1">&times;</span>
         </div>
-  </div>
-</div>
 
+        <div class="modal-body">
+          <!-- Hero Section -->
+          <section class="hero-section">
+            <div class="hero-content">
+              <h3>
+                🎓 Your Gateway to Pune's Premier Engineering Institutions
+              </h3>
+              <p class="hero-description">
+                Powered by advanced AI technology, VIDHUR AI is your
+                comprehensive guide to navigating the complex landscape of
+                engineering education in Pune. From admissions to placements, we
+                provide accurate, up-to-date information to help you make
+                informed decisions about your future.
+              </p>
+            </div>
+          </section>
 
-    <!-- Settings Menu -->
+          <!-- Statistics Section -->
+          <section class="stats-section">
+            <div class="stat-item">
+              <div class="stat-number">50+</div>
+              <div class="stat-label">Engineering Colleges</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">AI Support</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">3</div>
+              <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">Free Service</div>
+            </div>
+          </section>
+
+          <!-- Features Section -->
+          <section class="features-section">
+            <h4><i class="ri-star-line"></i> Key Features & Capabilities</h4>
+            <div class="features-grid">
+              <div class="feature-item">
+                <div class="feature-icon"><i class="ri-school-line"></i></div>
+                <div class="feature-content">
+                  <h5>College Information</h5>
+                  <p>
+                    Comprehensive details about top engineering colleges in Pune
+                    including COEP, PICT, VIT, MIT, and more.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="ri-money-rupee-circle-line"></i>
+                </div>
+                <div class="feature-content">
+                  <h5>Fee Structure & Scholarships</h5>
+                  <p>
+                    Detailed fee breakdowns, scholarship opportunities, and
+                    financial aid guidance for all programs.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="ri-file-list-3-line"></i>
+                </div>
+                <div class="feature-content">
+                  <h5>Admission Process</h5>
+                  <p>
+                    Step-by-step admission guidance, eligibility criteria,
+                    important dates, and application procedures.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="ri-briefcase-line"></i>
+                </div>
+                <div class="feature-content">
+                  <h5>Placement Records</h5>
+                  <p>
+                    Latest placement statistics, top recruiting companies,
+                    average packages, and career prospects.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon"><i class="ri-translate-2"></i></div>
+                <div class="feature-content">
+                  <h5>Multilingual Support</h5>
+                  <p>
+                    Available in English, Hindi, and Marathi to serve students
+                    from diverse backgrounds.
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon"><i class="ri-robot-line"></i></div>
+                <div class="feature-content">
+                  <h5>AI-Powered Responses</h5>
+                  <p>
+                    Advanced language models provide intelligent, contextual,
+                    and personalized responses.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Technology Section -->
+          <section class="tech-section">
+            <h4><i class="ri-cpu-line"></i> Powered By Advanced Technology</h4>
+            <div class="tech-stack">
+              <div class="tech-item">
+                <img src="langchain.png" alt="LangChain" class="tech-logo" />
+                <span>LangChain</span>
+              </div>
+              <div class="tech-item">
+                <img src="llama icon.png" alt="Llama AI" class="tech-logo" />
+                <span>Llama AI</span>
+              </div>
+              <div class="tech-item">
+                <div class="tech-icon">
+                  <i class="ri-code-s-slash-line"></i>
+                </div>
+                <span>JavaScript</span>
+              </div>
+              <div class="tech-item">
+                <div class="tech-icon"><i class="ri-html5-line"></i></div>
+                <span>HTML5</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Contact Section -->
+          <section class="contact-section">
+            <h4><i class="ri-team-line"></i> About DataDynamos Team</h4>
+            <p>
+              Developed by <strong>DataDynamos</strong>, a passionate team of
+              developers and AI enthusiasts committed to making education
+              accessible through technology. Our mission is to bridge the
+              information gap and empower students with the knowledge they need
+              to succeed.
+            </p>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="ri-mail-line"></i>
+                <span>support@datadynamos.com</span>
+              </div>
+              <div class="contact-item">
+                <i class="ri-github-line"></i>
+                <span>github.com/datadynamos</span>
+              </div>
+              <div class="contact-item">
+                <i class="ri-global-line"></i>
+                <span>www.datadynamos.com</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Version Info -->
+          <section class="version-section">
+            <div class="version-info">
+              <span class="version-badge">Version 2.0.1</span>
+              <span class="last-updated">Last Updated: December 2024</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Settings Menu -->
     <div id="settingsMenu" class="settings-menu">
       <div class="menu-header">
-          <h4>Settings</h4>
-          <span class="close-btn" id="closeMenu">&times;</span>
+        <div class="header-content">
+          <i class="ri-settings-3-line"></i>
+          <h4>Settings & Preferences</h4>
+        </div>
+        <span class="close-btn" id="closeMenu">&times;</span>
       </div>
       <div class="menu-content">
-      
+        <!-- Appearance Section -->
+        <div class="settings-section">
+          <h5><i class="ri-palette-line"></i> Appearance</h5>
           <div class="form-group">
-            <label for="shareButton">Share</label>
-              <button id="shareButton" class="btn-primary"><img src="share-icon.png" alt="Share icon"></button>
+            <label for="themeSelect">Theme</label>
+            <select id="themeSelect">
+              <option value="light">☀️ Light</option>
+              <option value="dark">🌙 Dark</option>
+              <option value="system">💻 System</option>
+            </select>
           </div>
           <div class="form-group">
-            <label for="logoutButton">LogOut</label>
-              <button id="logoutButton" class="btn-danger"><img src="logout-icon.png" alt="logout icon"></button>
+            <label for="languageSelect">Language</label>
+            <select id="languageSelect">
+              <option value="en">🇺🇸 English</option>
+              <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+              <option value="mr">🇮🇳 मराठी (Marathi)</option>
+            </select>
           </div>
+          <div class="form-group">
+            <label for="fontSizeSelect">Font Size</label>
+            <select id="fontSizeSelect">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Chat Settings Section -->
+        <div class="settings-section">
+          <h5><i class="ri-chat-3-line"></i> Chat Settings</h5>
+          <div class="form-group">
+            <label for="autoVoiceToggle">Auto Voice Response</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoVoiceToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="soundToggle">Sound Effects</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="soundToggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="typingSpeedSelect">Typing Speed</label>
+            <select id="typingSpeedSelect">
+              <option value="slow">Slow</option>
+              <option value="medium" selected>Medium</option>
+              <option value="fast">Fast</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="settings-section">
+          <h5><i class="ri-tools-line"></i> Actions</h5>
+          <div class="action-buttons">
+            <button id="clearHistoryBtn" class="action-btn danger">
+              <i class="ri-delete-bin-line"></i>
+              Clear Chat History
+            </button>
+            <button id="exportChatBtn" class="action-btn primary">
+              <i class="ri-download-line"></i>
+              Export Chat
+            </button>
+            <button id="shareButton" class="action-btn success">
+              <i class="ri-share-line"></i>
+              Share Chatbot
+            </button>
+            <button id="feedbackBtn" class="action-btn secondary">
+              <i class="ri-feedback-line"></i>
+              Send Feedback
+            </button>
+          </div>
+        </div>
       </div>
-  </div>
+    </div>
 
-   <!-- Sidebar -->
-<div id="sidebar" class="sidebar">
-          <!-- Sidebar Toggle Button -->
+    <!-- Mobile Sidebar Backdrop -->
+    <div
+      id="sidebar-backdrop"
+      class="sidebar-backdrop"
+      onclick="toggleSidebar()"
+    ></div>
 
-  <div class="sidebar-heading">
-            <button id="sidebar-toggle" onclick="toggleSidebar()" class="sidebar-tog" ><i class="ri-menu-fill"></i></button>
-  <h2 class="setting" id="settingsButton"><img src="setting.png" alt="setting logo" class="setting-icon"></h2>
+    <!-- Enhanced Professional Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <img
+            src="final-chatbot-logo.png"
+            alt="chatbot logo"
+            class="sidebar-logo"
+          />
+          <div class="brand-text">
+            <h3>VIDHUR AI</h3>
+            <span>College Assistant</span>
           </div>
-          <div class="sidebar-logo">
-            <img src="final-chatbot-logo.png" alt="chatbot logo" class="sidebar-head-logo">
+          <button
+            id="sidebar-close-right"
+            onclick="toggleSidebar()"
+            class="sidebar-close-right-btn"
+          >
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <button id="newChatSidebarBtn" class="quick-action-btn primary">
+          <i class="ri-add-line"></i>
+          <span>New Chat</span>
+        </button>
+        <button id="clearChatSidebarBtn" class="quick-action-btn secondary">
+          <i class="ri-delete-bin-line"></i>
+          <span>Clear History</span>
+        </button>
+      </div>
+
+      <!-- Chat History Section -->
+      <div class="sidebar-content">
+        <div class="history-section">
+          <div class="section-header">
+            <h4><i class="ri-history-line"></i> Chat History</h4>
+            <button class="expand-btn" id="historyExpandBtn">
+              <i class="ri-arrow-down-s-line"></i>
+            </button>
           </div>
-  
-  <div class="sections">
-    <div class="sidebar-section" id="today-section">
-      <h3 style="padding: 8px;">Recent</h3>
-      <div class="message-list" id="today-messages"></div>
-  </div>
-  </div>
-  <div class="about-chatbot">
-    <div class="form-group">
-      <label for="languageSelect">Select Language</label>
-      <select id="languageSelect">
-          <option value="en">English</option>
-          <option value="hi">Hindi</option>
-          <option value="mr">Rajasthani</option>
-      </select>
-  </div>
-  <div class="form-group">
-    <label for="themeSelect">Select Theme</label>
-    <select id="themeSelect">
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-        <option value="system">System</option>
-    </select>
-</div>
-    <button class="about-btn" id="openModalButton1">ABOUT</button>
-  </div>
-</div>
-    
+          <div class="history-content" id="historyContent">
+            <div class="time-period">
+              <h5>Today</h5>
+              <div class="message-list" id="today-messages"></div>
+            </div>
+            <div class="time-period">
+              <h5>Yesterday</h5>
+              <div class="message-list" id="yesterday-messages"></div>
+            </div>
+            <div class="time-period">
+              <h5>This Week</h5>
+              <div class="message-list" id="week-messages"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Conversations -->
+        <div class="saved-section">
+          <div class="section-header">
+            <h4><i class="ri-bookmark-line"></i> Saved Chats</h4>
+            <button class="expand-btn" id="savedExpandBtn">
+              <i class="ri-arrow-down-s-line"></i>
+            </button>
+          </div>
+          <div class="saved-content" id="savedContent">
+            <div class="saved-item">
+              <i class="ri-chat-3-line"></i>
+              <span>COEP Admission Process</span>
+            </div>
+            <div class="saved-item">
+              <i class="ri-chat-3-line"></i>
+              <span>PICT Fee Structure</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="footer-actions">
+          <button
+            class="footer-btn about-btn"
+            id="openModalButton1"
+            title="About"
+          >
+            <i class="ri-information-line"></i>
+            <span>About</span>
+          </button>
+          <button
+            class="footer-btn settings-btn"
+            id="settingsButton"
+            title="Settings"
+          >
+            <i class="ri-settings-3-line"></i>
+            <span>Settings</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <nav class="navbar">
-        <div class="logo">
-          <!-- Sidebar Toggle Button -->
-          <button id="sidebar-toggle" onclick="toggleSidebar()"><i class="ri-menu-fill"></i></button>
-            <a href="index.html" class="vidhur-name">VIDHUR</a>
-        </div>
-        <div class="features">
-          <button id="newChatButton" style="border: 1px solid black;"><i class="ri-chat-new-line"> New chat</i></button>
-          <button>Virtual College Tour</button>
-          <button>Financial Aid Calculator</button>
-          <button>Compare Tool</button>
-        </div>
-        <button class="hamburger" onclick="toggleMenu()"><i class="ri-arrow-drop-down-fill"></i></button>
-        <div class="sign-btn">
-            <a href="#" id="openModalButton">Sign In</a>
-        </div>
+      <div class="logo">
+        <!-- Sidebar Toggle Button -->
+        <button id="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="ri-menu-fill"></i>
+        </button>
+        <a href="index.html" class="vidhur-name">VIDHUR</a>
+      </div>
+      <div class="features">
+        <button id="newChatButton" style="border: 1px solid black">
+          <i class="ri-chat-new-line"> New chat</i>
+        </button>
+        <button>Virtual College Tour</button>
+        <button>Financial Aid Calculator</button>
+        <button>Compare Tool</button>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()">
+        <i class="ri-arrow-drop-down-fill"></i>
+      </button>
     </nav>
 
     <!-- This is code for chatbot interface -->
     <div class="chat-container" id="chat-container">
-        <div class="chat-box" id="chatBox" style="display: none;">
-            <!-- Messages will be appended here -->
-        </div>
-        
-        <div id="welcome-page">
-          <img src="final-chatbot-logo.png" alt="welcome-logo" class="welcome-logo">
-          <h3>"Your Gateway to Rajasthan's Best Institutions."</h3>
-          <p style="font-size: 14px;">Get quick and latest info about the top technical institutions under DTE Rajasthan. Let's dive in to find your perfect college match.</p>
-          
-          <div id="suggestions">
+      <div class="chat-box" id="chatBox" style="display: none">
+        <!-- Messages will be appended here -->
+      </div>
+
+      <div id="welcome-page">
+        <img
+          src="final-chatbot-logo.png"
+          alt="welcome-logo"
+          class="welcome-logo"
+        />
+        <h3>"Your Gateway to Pune's Best Engineering Institutions."</h3>
+        <p style="font-size: 14px">
+          Get quick and latest info about the top engineering institutions in
+          Pune. Powered by AI for intelligent, personalized responses. Let's
+          dive in to find your perfect college match.
+        </p>
+
+        <div id="suggestions">
           <div class="card">
-            <img src="collage.png"  alt="Collages Logo">
-            <a href="#" class="suggestion" data-prompt="college">Which are the Top 5 colleges in Rajasthan? on the basis of placement, result and Good Faclities.</a>
+            <img src="collage.png" alt="Collages Logo" />
+            <a href="#" class="suggestion" data-prompt="college"
+              >Which are the top 5 engineering colleges in Pune based on
+              placement, results, and facilities?</a
+            >
           </div>
           <div class="card">
-            <img src="degree.png" alt="degree Logo">
-            <a href="#" class="suggestion" data-prompt="college">Does Government Polytechnic College, Ajmer currently offer distance education courses for students</a>
+            <img src="degree.png" alt="degree Logo" />
+            <a href="#" class="suggestion" data-prompt="college"
+              >What are the admission requirements for Computer Engineering at
+              COEP Pune?</a
+            >
           </div>
           <div class="card">
-            <img src="fees.png" alt="fees Logo">
-            <a href="#" class="suggestion" data-prompt="college">What is the annual fees for computer engineering at Government Polytechnic College, Ajmer?</a>
+            <img src="fees.png" alt="fees Logo" />
+            <a href="#" class="suggestion" data-prompt="college"
+              >What is the annual fees structure for B.Tech at PICT Pune?</a
+            >
           </div>
           <div class="card">
-            <img src="alumni.png" alt="alumni Logo">
-            <a href="#" class="suggestion" data-prompt="college">What is the average package offered at Shri Gokul Verma Government Polytechnic College,Bharatpur?</a>
+            <img src="alumni.png" alt="alumni Logo" />
+            <a href="#" class="suggestion" data-prompt="college"
+              >What is the average placement package at VIT Pune for Computer
+              Science students?</a
+            >
           </div>
         </div>
-        </div>
-        <button id="scroll-btn" onclick="scrollToBottom()">↓</button>
-        <div class="popover-cont">Speak</div>
-        <div class="message-input">
-          <button class="voiceBtn" id="voiceBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0001 1C14.7615 1 17.0001 3.23858 17.0001 6V12C17.0001 14.7614 14.7615 17 12.0001 17C9.23865 17 7.00008 14.7614 7.00008 12V6C7.00008 3.23858 9.23865 1 12.0001 1ZM2.19238 13.9615L4.15392 13.5692C4.88321 17.2361 8.11888 20 12.0001 20C15.8813 20 19.1169 17.2361 19.8462 13.5692L21.8078 13.9615C20.8961 18.5452 16.8516 22 12.0001 22C7.14858 22 3.104 18.5452 2.19238 13.9615Z"></path></svg></button>
-          
-            <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
-            <!-- <button onclick="sendMessage()">Send</button> -->
-            <button id="send-btn" onclick="sendMessage()">
-                <svg ...> <!-- SVG Icon --> </svg>
-                <div class="svg-wrapper-1">
-                  <div class="svg-wrapper">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="20"
-                      height="20"
-                    >
-                      <path fill="none" d="M0 0h24v24H0z"></path>
-                      <path
-                        fill="currentColor"
-                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
-              </button>
-        </div>
-        
+      </div>
+      <button id="scroll-btn" onclick="scrollToBottom()">↓</button>
+      <div class="popover-cont">Speak</div>
+      <div class="message-input">
+        <button class="voiceBtn" id="voiceBtn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12.0001 1C14.7615 1 17.0001 3.23858 17.0001 6V12C17.0001 14.7614 14.7615 17 12.0001 17C9.23865 17 7.00008 14.7614 7.00008 12V6C7.00008 3.23858 9.23865 1 12.0001 1ZM2.19238 13.9615L4.15392 13.5692C4.88321 17.2361 8.11888 20 12.0001 20C15.8813 20 19.1169 17.2361 19.8462 13.5692L21.8078 13.9615C20.8961 18.5452 16.8516 22 12.0001 22C7.14858 22 3.104 18.5452 2.19238 13.9615Z"
+            ></path>
+          </svg>
+        </button>
+
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Type your message here..."
+          onkeypress="handleKeyPress(event)"
+        />
+        <!-- <button onclick="sendMessage()">Send</button> -->
+        <button id="send-btn" onclick="sendMessage()">
+          <svg ...><!-- SVG Icon --></svg>
+          <div class="svg-wrapper-1">
+            <div class="svg-wrapper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+              >
+                <path fill="none" d="M0 0h24v24H0z"></path>
+                <path
+                  fill="currentColor"
+                  d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </div>
     </div>
 
     <script src="chatbot.js"></script>
-</body>
-<footer>
-  <p>&copy; This chatbot is generated by DataDynamos!!</p>
-</footer>
+  </body>
+  <footer>
+    <p>&copy; This chatbot is generated by DataDynamos!!</p>
+  </footer>
 </html>
