@@ -80,6 +80,6 @@ This project is licensed under the [MIT License](LICENSE) - see the LICENSE file
 
 ## 📞 Contact
 - Project Link: [https://github.com/dev-amolrakh/AI-College-Enquiry-Chatbot](https://github.com/dev-amolrakh/AI-College-Enquiry-Chatbot)
-- For queries: [Your Contact Information]
+- For queries: amolrakh22@gmail.com
 
 ---
