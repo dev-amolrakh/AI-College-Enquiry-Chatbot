@@ -1,103 +1,245 @@
 # 🎓 VIDHUR AI - College Enquiry Chatbot
 
-## 📋 Project Overview
+<div align="center">
 
-**VIDHUR AI** is an intelligent web-based chatbot designed to assist students and parents with comprehensive information about engineering colleges in Pune, Maharashtra. The application leverages advanced AI language models to provide personalized, accurate, and contextual responses about college admissions, fees, courses, placements, and more.
+<img src="assets/images/final-chatbot-logo.png" alt="VIDHUR AI Logo" width="120" style="max-width:100%;height:auto;"/>
 
-### 🎯 **Primary Purpose**
+**AI-Powered Engineering College Assistant for Pune, Maharashtra**
 
-- Provide instant access to detailed information about Pune's engineering institutions
-- Simplify the college selection process through AI-powered guidance
-- Offer multilingual support (English, Hindi, Marathi)
-- Deliver real-time, dynamic responses tailored to user queries
+[![Live Demo](https://img.shields.io/badge/Live-Demo-success?style=for-the-badge)](https://vidhur.netlify.app/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Made with JavaScript](https://img.shields.io/badge/Made%20with-JavaScript-f7df1e?logo=javascript)](https://www.javascript.com/)
+[![Powered by Groq](https://img.shields.io/badge/Powered%20by-Groq-blue)](https://groq.com/)
 
----
+**[🚀 Try Live Demo](https://vidhur.netlify.app/)**
 
-## 🚀 **Core Technologies & Architecture**
-
-### **Frontend Technologies**
-
-- **HTML5**: Semantic structure with responsive design
-- **CSS3**: Modern styling with CSS Grid, Flexbox, and animations
-- **JavaScript (ES6+)**: Asynchronous programming with Fetch API
-- **Marked.js**: Markdown parsing for rich text formatting
-- **LDRS**: Pinwheel loading animations
-- **RemixIcon**: Icon library for UI elements
-
-### **AI & Backend Integration**
-
-- **Groq API**: High-speed LLM inference (Llama 3.1 8B Instant model)
-- **LangChain Architecture**: Structured conversation management
-- **RESTful API Communication**: Asynchronous HTTP requests
-- **Context Management**: Conversation history tracking
-
-### **Key Features**
-
-- **Real-time AI Responses**: Sub-second response times
-- **Conversation Memory**: Maintains context across chat sessions
-- **Multilingual Support**: Dynamic language switching
-- **Offline Fallback**: Rich static responses when API unavailable
-- **Voice Recognition**: Web Speech API integration
-- **Export Functionality**: Chat history download
-- **Responsive Design**: Mobile-first approach
+</div>
 
 ---
 
-## 🏗️ **Project Structure & File Analysis**
+## 📖 About
+
+**VIDHUR AI** is an intelligent chatbot that helps students and parents find information about engineering colleges in Pune, Maharashtra. Using Groq's LLM API, it provides instant, accurate answers about admissions, fees, courses, placements, and campus life.
+
+### ✨ Key Features
+
+- 🤖 AI-Powered responses using Groq's Llama 3.1 8B model
+- 🌐 Multilingual support (English, Hindi, Marathi)
+- 📱 Fully responsive design for all devices
+- 💬 Context-aware conversation memory
+- 🎯 Specialized knowledge of 50+ Pune colleges
+- ⚡ Sub-second response times
+- 🎤 Voice input support
+- 📥 Export chat history
+
+---
+
+## 🖼️ Screenshots
+
+### Desktop View
+
+<div align="center">
+  <img src="screenshots/Screenshot 2025-12-25 235007.png" alt="Welcome Screen" width="800"/>
+  <p><i>Welcome screen with suggestion cards</i></p>
+</div>
+
+<div align="center">
+  <img src="screenshots/Screenshot 2025-12-25 235154.png" alt="Chat Interface" width="800"/>
+  <p><i>Main chat interface with AI responses</i></p>
+</div>
+
+<div align="center">
+  <img src="screenshots/Screenshot 2025-12-25 235234.png" alt="College Comparison" width="800"/>
+  <p><i>Detailed college comparison with tables</i></p>
+</div>
+
+<div align="center">
+  <img src="screenshots/Screenshot 2025-12-25 235302.png" alt="About Modal" width="800"/>
+  <p><i>About modal with features and statistics</i></p>
+</div>
+
+### Mobile View
+
+<div align="center">
+  <img src="screenshots/Screenshot 2025-12-25 235717.png" alt="Mobile Interface" width="300"/>
+  <img src="screenshots/Screenshot 2025-12-25 235656.png" alt="Mobile Chat" width="300"/>
+  <p><i>Responsive mobile interface</i></p>
+</div>
+
+---
+
+## 🚀 What Makes It Special
+
+- ✅ **Intelligent AI Responses** - Powered by Groq's LLM API
+- ✅ **College Comparison** - Side-by-side detailed comparisons
+- ✅ **50+ Pune Colleges** - Comprehensive information database
+- ✅ **Voice Input** - Speak your queries naturally
+- ✅ **Export History** - Download conversations as text files
+- ✅ **Offline Fallback** - Works even without internet
+- ✅ **Rich Formatting** - Markdown tables, lists, and styling
+- ✅ **Smart Suggestions** - Quick-start question cards
+- 💾 **Conversation Memory** - Maintains context across chats
+
+---
+
+## 🏗️ Tech Stack
+
+| Category      | Technologies                          |
+| ------------- | ------------------------------------- |
+| **Frontend**  | HTML5, CSS3, JavaScript (ES6+)        |
+| **AI/LLM**    | Groq API, Llama 3.1 8B Instant        |
+| **Libraries** | Marked.js, LDRS, RemixIcon            |
+| **APIs**      | Web Speech API, Groq REST API         |
+| **Storage**   | LocalStorage for conversation history |
+
+---
+
+## 📂 Project Structure
 
 ```
 AI-College-Enquiry-Chatbot/
-├── index.html                     # Main application entry point
+├── index.html                  # Main application
+├── style.css                   # Complete styling
+├── config.js                   # API configuration
 ├── src/
 │   └── js/
-│       └── chatbot.js             # Core chatbot logic and AI integration (modular)
+│       └── chatbot.js          # Core chatbot logic
 ├── assets/
-│   └── images/                    # Centralized images used by the UI
-├── style.css                      # Comprehensive styling and responsive design
-├── config.js                      # Configuration and API settings
-├── SETUP_INSTRUCTIONS.md          # Detailed setup guide
-├── AVAILABLE_MODELS.md            # AI model options and specifications
-├── scripts/                       # Helper scripts (organize assets, etc.)
-├── archive/                       # Archived/dev files (debug pages, old chatbot.js)
-├── start-server.bat               # Windows server startup script
-└── README.md                      # Project documentation
+│   └── images/                 # Logo and images
+├── screenshots/                # UI screenshots
+├── SETUP_INSTRUCTIONS.md       # Detailed setup guide
+├── AVAILABLE_MODELS.md         # AI model information
+└── README.md                   # This file
 ```
 
-### **🔍 Detailed File Analysis**
+---
 
-#### **1. index.html (540 lines)**
+## ⚙️ Quick Start
 
-**Purpose**: Main user interface and application structure
+### Try it Live
 
-**Key Components**:
+🌐 **[Visit Live Demo](https://vidhur.netlify.app/)** - No setup needed!
 
-- **Modal System**: About dialog with company information and features
-- **Settings Panel**: Theme, language, and chat preferences
-- **Responsive Sidebar**: Chat history and navigation
-- **Professional Navbar**: Brand identity and feature buttons
-- **Chat Interface**: Message display and input handling
-- **Welcome Page**: Initial suggestions and onboarding
+### Run Locally
 
-**Technical Features**:
+1. **Clone the repository**
+2. **Get free Groq API key** from [console.groq.com](https://console.groq.com/)
+3. **Configure API key** in `config.js` (replace `YOUR_API_KEY_HERE`)
+4. **Start local server**:
+   - Windows: Run `start-server.bat`
+   - Python: `python -m http.server 8000`
+   - VS Code: Use Live Server extension
+5. **Open** `http://localhost:8000` in browser
 
-```html
-<!-- External Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/pinwheel.js"></script>
-```
+> ⚠️ Use a local server, don't open HTML file directly
 
-**Interview Points**:
+Detailed setup guide: [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md)
 
-- Semantic HTML5 structure
-- Accessibility considerations (ARIA labels, keyboard navigation)
-- CDN integration for external libraries
-- Event-driven architecture
+---
 
-#### **2. src/js/chatbot.js (refactored, ~1,397 lines)**
+## 💡 Usage
 
-**Purpose**: Core application logic and AI integration (moved to `src/js/chatbot.js`)
+### Try These Questions
 
-**Key Modules**:
+- "What are the top engineering colleges in Pune?"
+- "Compare COEP and PICT"
+- "Tell me about admission process at VIT"
+- "Which college has the best placements?"
+- "What are the fees at MIT Pune?"
+
+### Quick Tips
+
+- 🎤 **Voice Input** - Click microphone icon and speak
+- 🌐 **Language** - Switch between English, Hindi, Marathi
+- 📥 **Export** - Download chat history anytime
+- 🔄 **New Chat** - Start fresh while keeping history
+
+---
+
+## 🎓 Supported Colleges
+
+VIDHUR AI has extensive knowledge about these Pune engineering colleges:
+
+- College of Engineering Pune (COEP)
+- Pune Institute of Computer Technology (PICT)
+- Vishwakarma Institute of Technology (VIT)
+- Maharashtra Institute of Technology (MIT)
+- Symbiosis Institute of Technology (SIT)
+- Bharati Vidyapeeth College of Engineering
+- Sinhgad College of Engineering
+- JSPM's Rajarshi Shahu College of Engineering
+- Cummins College of Engineering for Women
+- Government Polytechnic Pune
+- ...and 40+ more institutions
+
+---
+
+## 🔧 Configuration
+
+Customize settings in [config.js](config.js):
+
+- API Key, Model selection
+- Response length and creativity
+- Conversation memory limit
+
+See [AVAILABLE_MODELS.md](AVAILABLE_MODELS.md) for model options.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Amol Rakh**
+
+- GitHub: [@AmolRakh](https://github.com/AmolRakh)
+- Live Demo: [https://vidhur.netlify.app/](https://vidhur.netlify.app/)
+- Project Link: [AI-College-Enquiry-Chatbot](https://github.com/AmolRakh/AI-College-Enquiry-Chatbot)
+
+---
+
+## 🙏 Acknowledgments
+
+- [Groq](https://groq.com/) for providing free, high-speed LLM API
+- [Marked.js](https://marked.js.org/) for Markdown parsing
+- [RemixIcon](https://remixicon.com/) for beautiful icons
+- [LDRS](https://uiball.com/ldrs/) for loading animations
+
+---
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check [SETUP_INSTRUCTIONS.md](SETUP_INSTRUCTIONS.md) for troubleshooting
+2. Open an issue on GitHub
+3. Contact the developer
+
+---
+
+<div align="center">
+
+**Made with ❤️ for students seeking engineering education in Pune**
+
+⭐ Star this repo if you find it helpful!
+
+</div>
 
 **A. API Configuration & LLM Integration**
 
