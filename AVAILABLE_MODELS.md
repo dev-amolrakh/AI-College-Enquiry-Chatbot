@@ -76,7 +76,7 @@ const MODEL_NAME = "deepseek-r1-distill-qwen-32b";
 
 ## How to Change Model
 
-1. Open `chatbot.js`
+1. Open `src/js/chatbot.js`
 2. Find line 3: `const MODEL_NAME = "llama-3.1-8b-instant";`
 3. Replace with your preferred model from the **WORKING** list above
 4. Save and refresh your chatbot

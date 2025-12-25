@@ -1,7 +1,41 @@
-// LLM Configuration
-const GROQ_API_KEY = "YOUR_API_KEY"; // Replace with your actual Groq API key
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-const MODEL_NAME = "llama-3.1-8b-instant"; // Most stable model
+// LLM Configuration - prefer values from `window.CONFIG` (set in config.js)
+const GROQ_API_KEY =
+  (window.CONFIG && window.CONFIG.GROQ_API_KEY) || "YOUR_API_KEY"; // Replace or use server proxy
+const GROQ_API_URL =
+  (window.CONFIG && window.CONFIG.GROQ_API_URL) ||
+  "https://api.groq.com/openai/v1/chat/completions";
+const MODEL_NAME =
+  (window.CONFIG && window.CONFIG.MODEL_NAME) || "llama-3.1-8b-instant"; // Most stable model
+const MAX_TOKENS = (window.CONFIG && window.CONFIG.MAX_TOKENS) || 1000;
+const TEMPERATURE = (window.CONFIG && window.CONFIG.TEMPERATURE) || 0.7;
+const TOP_P = (window.CONFIG && window.CONFIG.TOP_P) || 0.9;
+const MAX_HISTORY_LENGTH =
+  (window.CONFIG && window.CONFIG.MAX_HISTORY_LENGTH) || 20;
+
+if (!GROQ_API_KEY || GROQ_API_KEY === "YOUR_API_KEY") {
+  console.warn(
+    "GROQ API key not set. Set `CONFIG.GROQ_API_KEY` in config.js or use a server-side proxy. Requests to Groq may fail."
+  );
+}
+
+// Global variable to store selected language
+let selectedLanguage = "en";
+
+// Configure Markdown renderer (marked) for consistent table support
+if (typeof marked !== "undefined") {
+  try {
+    marked.setOptions({
+      gfm: true,
+      breaks: false,
+      headerIds: false,
+      mangle: false,
+      smartLists: true,
+      smartypants: false,
+    });
+  } catch (e) {
+    console.warn("Could not configure marked options:", e);
+  }
+}
 
 // Multilingual system prompts
 const SYSTEM_PROMPTS = {
@@ -45,12 +79,12 @@ Always provide accurate, helpful, and detailed information in ENGLISH ONLY. Form
 - प्रवेश परीक्षाएं (JEE, MHT-CET, आदि)
 - कॉलेज रैंकिंग और मान्यताएं
 
-मुख्य पुणे इंजीनियरिंग कॉलेज:
+मुख्य पुणे इंजीनत्रिकी कॉलेज:
 - कॉलेज ऑफ इंजीनियरिंग पुणे (COEP)
 - पुणे इंस्टिट्यूट ऑफ कंप्यूटर टेक्नोलॉजी (PICT)
-- विश्वकर्मा इंस्टिट्यूट ऑफ टेक्नोलॉजी (VIT)
-- महाराष्ट्र इंस्टिट्यूट ऑफ टेक्नोलॉजी (MIT)
-- सिम्बायोसिस इंस्टिट्यूट ऑफ टेक्नोलॉजी (SIT)
+- विश्वकर्मा इंस्टिट्यूट ऑफ टेक्नॉलॉजी (VIT)
+- महाराष्ट्र इंस्टिट्यूट ऑफ टेक्नॉलॉजी (MIT)
+- सिम्बायोसिस इंस्टिट्यूट ऑफ टेक्नॉलॉजी (SIT)
 
 हमेशा सटीक, सहायक और विस्तृत जानकारी प्रदान करें केवल हिंदी में। अपने उत्तरों को आकर्षक और समझने योग्य बनाने के लिए मार्कडाउन फॉर्मेटिंग का उपयोग करें। महत्वपूर्ण बिंदुओं को बोल्ड करें, सूचियों के लिए बुलेट पॉइंट्स का उपयोग करें, और फीस संरचना, तुलना, और डेटा के लिए टेबल का उपयोग करें। यदि आपके पास विशिष्ट जानकारी नहीं है, तो उन्हें आधिकारिक कॉलेज वेबसाइटों के लिए मार्गदर्शन करें।`,
 
@@ -76,26 +110,121 @@ Always provide accurate, helpful, and detailed information in ENGLISH ONLY. Form
 नेहमी अचूक, उपयुक्त आणि तपशीलवार माहिती केवळ मराठीत प्रदान करा। तुमची उत्तरे आकर्षक आणि समजण्यायोग्य करण्यासाठी मार्कडाउन फॉरमॅटिंग वापरा। महत्त्वाचे मुद्दे बोल्ड करा, सूचींसाठी बुलेट पॉइंट्स वापरा, आणि फी रचना, तुलना आणि डेटासाठी टेबल वापरा। जर तुमच्याकडे विशिष्ट माहिती नसेल, तर त्यांना अधिकृत महाविद्यालय वेबसाइट्सकडे मार्गदर्शन करा।`,
 };
 
+// College Comparison System Prompt
+const COMPARISON_SYSTEM_PROMPT = `You are VIDHUR, an expert AI assistant specialized in comparing engineering colleges in Pune, Maharashtra, India. Your task is to provide a comprehensive, detailed, and well-structured comparison between two colleges.
+
+When comparing colleges, you MUST include ALL of the following factors in a detailed comparison table format:
+
+## Comparison Structure:
+
+### 1. **Basic Information Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Established Year | | |
+| Type (Govt/Private/Autonomous) | | |
+| Affiliation | | |
+| Location in Pune | | |
+
+### 2. **Rankings & Accreditation Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| NIRF Ranking | | |
+| AICTE Approval | | |
+| NBA Accreditation | | |
+| NAAC Grade | | |
+| University Affiliation | | |
+
+### 3. **Academics Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Courses Offered | | |
+| Top Branches | | |
+| Faculty Quality | | |
+| Research Output | | |
+| Industry Collaborations | | |
+
+### 4. **Fee Structure Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Annual Tuition Fee | | |
+| Total 4-Year Cost | | |
+| Hostel Fee (Annual) | | |
+| Other Charges | | |
+| Scholarship Availability | | |
+
+### 5. **Admission & Cutoffs Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Admission Process | | |
+| MHT-CET Cutoff (CS/IT) | | |
+| JEE Main Cutoff | | |
+| Management Quota | | |
+| Seat Availability | | |
+
+### 6. **Placements Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Highest Package | | |
+| Average Package | | |
+| Median Package | | |
+| Placement Percentage | | |
+| Top Recruiters | | |
+
+### 7. **Infrastructure & Facilities Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Campus Size | | |
+| Hostel Facility | | |
+| Library | | |
+| Labs & Equipment | | |
+| Sports Facilities | | |
+| Wi-Fi & Tech | | |
+
+### 8. **Campus Life Table**
+| Factor | [College 1] | [College 2] |
+|--------|-------------|-------------|
+| Student Clubs | | |
+| Technical Events | | |
+| Cultural Festivals | | |
+| Industry Exposure | | |
+| Alumni Network | | |
+
+## After the tables, provide:
+
+### 🏆 Overall Winner Analysis
+Summarize which college is better overall and why.
+
+### 💰 Financial Perspective
+Which college offers better value for money? Consider ROI based on fees vs placements.
+
+### 🎯 Recommendation Based on Goals
+- **For High Placements**: Which college?
+- **For Budget-Conscious Students**: Which college?
+- **For Research/Higher Studies**: Which college?
+- **For Campus Life/Experience**: Which college?
+
+### ⚠️ Important Considerations
+List any specific things students should consider before making a decision.
+
+### 🎓 Final Verdict
+Give a clear, actionable recommendation with reasoning.
+
+Always use markdown tables, bold important points, and provide accurate data. If exact data is unavailable, provide approximate ranges and mention that students should verify from official sources.`;
+
 // Function to get current system prompt based on selected language
 function getCurrentSystemPrompt() {
-  const languageSelect = document.getElementById("languageSelect");
-  const selectedLanguage = languageSelect ? languageSelect.value : "en";
   return SYSTEM_PROMPTS[selectedLanguage] || SYSTEM_PROMPTS.en;
 }
 
-// Function to call Groq API
-async function callGroqAPI(userMessage, conversationHistory = []) {
+// Function to call Groq API for college comparison
+async function callComparisonAPI(college1, college2) {
   try {
-    // console.log("🚀 Making API call to Groq..."); // Debug log
-    // console.log("🔑 API Key present:", GROQ_API_KEY ? "Yes" : "No");
+    const comparisonQuery = `Compare these two engineering colleges in Pune in complete detail: "${college1}" vs "${college2}". Provide a comprehensive comparison with all the tables and analysis as specified.`;
 
     const messages = [
-      { role: "system", content: getCurrentSystemPrompt() },
-      ...conversationHistory,
-      { role: "user", content: userMessage },
+      { role: "system", content: COMPARISON_SYSTEM_PROMPT },
+      { role: "user", content: comparisonQuery },
     ];
-
-    // console.log("📝 Messages being sent:", messages);
 
     const response = await fetch(GROQ_API_URL, {
       method: "POST",
@@ -106,37 +235,94 @@ async function callGroqAPI(userMessage, conversationHistory = []) {
       body: JSON.stringify({
         model: MODEL_NAME,
         messages: messages,
-        max_tokens: 1000,
-        temperature: 0.7,
+        max_tokens: 4000, // Increased for detailed comparison
+        temperature: 0.5, // Lower for more factual responses
         top_p: 0.9,
         stream: false,
       }),
     });
 
-    // console.log("📡 Response status:", response.status);
-    // console.log("📡 Response headers:", response.headers);
-
     if (!response.ok) {
       const errorText = await response.text();
-    //   console.error("❌ API Error Response:", errorText);
       throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    // console.log("✅ API Response received:", data);
 
     if (data.choices && data.choices[0] && data.choices[0].message) {
-    //   console.log("✅ Returning AI response");
       return data.choices[0].message.content;
     } else {
-    //   console.error("❌ Invalid response format from API");
       throw new Error("Invalid response format from API");
     }
   } catch (error) {
-    // console.error("❌ Error calling Groq API:", error);
-    // console.error("❌ Error details:", error.message);
+    console.error("Comparison API error:", error);
+    return getComparisonFallback(college1, college2);
+  }
+}
 
-    // Check if it's a network/CORS issue
+// Fallback comparison data
+function getComparisonFallback(college1, college2) {
+  return `# 🎓 ${college1} vs ${college2}
+
+## ⚠️ Live Comparison Unavailable
+
+I'm currently unable to fetch live comparison data. However, here's a general comparison framework:
+
+| Factor | ${college1} | ${college2} |
+|--------|-------------|-------------|
+| Type | Please verify | Please verify |
+| Approx. Fees | ₹1-4 LPA | ₹1-4 LPA |
+| Placements | Verify from official site | Verify from official site |
+
+### 📝 Recommendation
+Please visit the official websites of both colleges or contact their admission offices for accurate and up-to-date information.
+
+### 🔗 Useful Resources
+- Check NIRF Rankings: [nirfindia.org](https://www.nirfindia.org)
+- MHT-CET Portal: [cetcell.mahacet.org](https://cetcell.mahacet.org)
+- AICTE Portal: [aicte-india.org](https://www.aicte-india.org)
+
+*Please ensure you have a stable internet connection and try again for detailed comparison.*`;
+}
+
+// Function to call Groq API
+async function callGroqAPI(userMessage, conversationHistory = []) {
+  try {
+    const messages = [
+      { role: "system", content: getCurrentSystemPrompt() },
+      ...conversationHistory,
+      { role: "user", content: userMessage },
+    ];
+
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: MODEL_NAME,
+        messages: messages,
+        max_tokens: MAX_TOKENS,
+        temperature: TEMPERATURE,
+        top_p: TOP_P,
+        stream: false,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      return data.choices[0].message.content;
+    } else {
+      throw new Error("Invalid response format from API");
+    }
+  } catch (error) {
     if (error.message.includes("fetch") || error.name === "TypeError") {
       console.error(
         "🚨 This might be a CORS issue. Make sure you are running on a web server (not file://)"
@@ -144,7 +330,6 @@ async function callGroqAPI(userMessage, conversationHistory = []) {
       console.error("💡 Try using: python -m http.server 8000 or npx serve .");
     }
 
-    // console.log("🔄 Falling back to offline responses");
     return getFallbackResponse(userMessage);
   }
 }
@@ -159,7 +344,7 @@ const FALLBACK_RESPONSES = {
   },
   hi: {
     greeting:
-      "नमस्ते! मैं VIDHUR हूं, पुणे इंजीनियरिंग कॉलेज की जानकारी के लिए आपका AI गाइड। वर्तमान में मेरे AI ब्रेन में कनेक्टिविटी की समस्या है, लेकिन मैं अभी भी पुणे के कॉलेजों की बुनियादी जानकारी दे सकता हूं। मैं आपकी कैसे सहायता कर सकता हूं?",
+      "नमस्ते! मैं VIDHUR हूं, पुणे इंजीनयरिंग कॉलेज की जानकारी के लिए आपका AI गाइड। वर्तमान में मेरे AI ब्रेन में कनेक्टिविटी की समस्या है, लेकिन मैं अभी भी पुणे के कॉलेजों की बुनियादी जानकारी दे सकता हूं। मैं आपकी कैसे सहायता कर सकता हूं?",
     offline:
       "कनेक्टिविटी की समस्या के कारण मैं वर्तमान में ऑफलाइन मोड में चल रहा हूं। हालांकि, मेरे पास COEP, PICT, VIT, MIT और अन्य पुणे इंजीनियरिंग कॉलेजों की बुनियादी जानकारी है। कृपया प्रवेश, फीस, कोर्स या प्लेसमेंट के बारे में विशिष्ट प्रश्न पूछें!",
   },
@@ -187,10 +372,7 @@ function getFallbackResponse(message) {
     lowerMessage.includes("नमस्कार")
   ) {
     return responses.greeting;
-  }
-
-  // COEP Engineering Branches
-  else if (
+  } else if (
     (lowerMessage.includes("coep") ||
       lowerMessage.includes("college of engineering pune")) &&
     (lowerMessage.includes("branch") ||
@@ -218,13 +400,10 @@ function getFallbackResponse(message) {
 📍 **Established:** \`1854\` (One of India's oldest engineering colleges)  
 🏆 **NIRF Ranking:** Among top engineering colleges  
 💰 **Fees:** \`₹50,000-1,00,000\` per year (Government college)  
-📝 **Admission:** Through MHT-CET & JEE Main  
+📝 **Admission:** Through MHT-CET & JEE Main
 
 > Would you like specific details about any branch or admission process?`;
-  }
-
-  // PICT Engineering Branches
-  else if (
+  } else if (
     (lowerMessage.includes("pict") ||
       lowerMessage.includes("pune institute of computer technology")) &&
     (lowerMessage.includes("branch") ||
@@ -251,36 +430,21 @@ function getFallbackResponse(message) {
 💰 **Fees:** \`₹2-3 LPA\`  
 
 > **PICT is especially known for Computer Science and IT programs!**`;
-  }
-
-  // General COEP info
-  else if (
+  } else if (
     lowerMessage.includes("coep") ||
     lowerMessage.includes("college of engineering pune")
   ) {
     return "🏛️ College of Engineering Pune (COEP) is one of India's premier engineering institutes, established in 1854. It offers 8 undergraduate and multiple postgraduate programs. Known for excellent faculty, research, and alumni network. Government college with affordable fees. What specific information would you like about COEP?";
-  }
-
-  // General PICT info
-  else if (
+  } else if (
     lowerMessage.includes("pict") ||
     lowerMessage.includes("pune institute of computer technology")
   ) {
     return "💻 Pune Institute of Computer Technology (PICT) is renowned for its computer science and IT programs. Established in 1983, it has excellent placement records with top IT companies. Known for innovation and industry connections. What would you like to know about PICT?";
-  }
-
-  // VIT info
-  else if (lowerMessage.includes("vit") && lowerMessage.includes("pune")) {
+  } else if (lowerMessage.includes("vit") && lowerMessage.includes("pune")) {
     return "🔧 Vishwakarma Institute of Technology (VIT) Pune offers engineering programs in Computer, IT, Electronics, Mechanical, Civil, and other branches. Known for good infrastructure and placement support. Private college with moderate fees. What specific information do you need about VIT?";
-  }
-
-  // MIT info
-  else if (lowerMessage.includes("mit") && lowerMessage.includes("pune")) {
+  } else if (lowerMessage.includes("mit") && lowerMessage.includes("pune")) {
     return "🎓 Maharashtra Institute of Technology (MIT) Pune is part of MIT Group. Offers various engineering branches with good industry connections. Known for practical learning approach and decent placements. What would you like to know about MIT Pune?";
-  }
-
-  // Placement queries
-  else if (
+  } else if (
     lowerMessage.includes("placement") ||
     lowerMessage.includes("package") ||
     lowerMessage.includes("salary") ||
@@ -321,16 +485,8 @@ function getFallbackResponse(message) {
 ## Placement Preparation Timeline
 
 | Year | Semester | Activities | Focus Areas |
-|------|----------|------------|-------------|
-| **3rd Year** | 5th-6th | Skill building, Internships | Programming, Projects |
-| **4th Year** | 7th | Campus placements begin | Interview prep, Aptitude |
-| **4th Year** | 8th | Final placements | Negotiation, Joining |
-
-> Which college's detailed placement report would you like to see?`;
-  }
-
-  // Fees queries
-  else if (lowerMessage.includes("fees") || lowerMessage.includes("cost")) {
+|------|----------|------------|-------------|`;
+  } else if (lowerMessage.includes("fees") || lowerMessage.includes("cost")) {
     return `# 💰 Engineering College Fees in Pune
 
 ## Annual Fee Structure (B.Tech)
@@ -360,10 +516,7 @@ function getFallbackResponse(message) {
 • **Government schemes** (various state programs)
 
 > Which specific college's detailed fee structure would you like to know?`;
-  }
-
-  // Admission queries
-  else if (
+  } else if (
     lowerMessage.includes("admission") ||
     lowerMessage.includes("entrance")
   ) {
@@ -396,21 +549,8 @@ function getFallbackResponse(message) {
 | **Phase 4** | August-September | Document verification & admission |
 | **Phase 5** | September | Classes commence |
 
-## Required Documents
-
-| Document Type | Original | Photocopy | Notes |
-|---------------|----------|-----------|-------|
-| **10th Marksheet** | ✅ | ✅ | For age proof |
-| **12th Marksheet** | ✅ | ✅ | PCM marks important |
-| **Entrance Scorecard** | ✅ | ✅ | MHT-CET/JEE Main |
-| **Caste Certificate** | ✅ | ✅ | If applicable |
-| **Income Certificate** | ✅ | ✅ | For scholarships |
-
-> Which specific college's admission process would you like detailed information about?`;
-  }
-
-  // Top colleges query
-  else if (
+## Required Documents`;
+  } else if (
     lowerMessage.includes("top") &&
     (lowerMessage.includes("college") || lowerMessage.includes("best"))
   ) {
@@ -457,7 +597,6 @@ let conversationHistory = [];
 
 // Initialize language on page load
 document.addEventListener("DOMContentLoaded", function () {
-  // Set default language to English and update interface
   const languageSelect = document.getElementById("languageSelect");
   if (languageSelect) {
     languageSelect.value = "en";
@@ -471,14 +610,13 @@ function toggleMenu() {
   links.classList.toggle("active");
 }
 
-document
-  .getElementById("voiceBtn")
-  .addEventListener("click", startVoiceRecognition);
-// Voice recognition setup
-function startVoiceRecognition() {
-  const recognition = new window.webkitSpeechRecognition();
+const voiceBtnEl = document.getElementById("voiceBtn");
+if (voiceBtnEl) voiceBtnEl.addEventListener("click", startVoiceRecognition);
 
-  // Set language based on current selection
+function startVoiceRecognition() {
+  const recognition = new (window.SpeechRecognition ||
+    window.webkitSpeechRecognition)();
+
   const languageSelect = document.getElementById("languageSelect");
   const selectedLanguage = languageSelect ? languageSelect.value : "en";
 
@@ -494,7 +632,8 @@ function startVoiceRecognition() {
   recognition.onstart = () => console.log("Voice recognition started...");
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    document.getElementById("userInput").value = transcript;
+    const inputEl = document.getElementById("userInput");
+    if (inputEl) inputEl.value = transcript;
     sendMessage();
   };
   recognition.onerror = (event) => {
@@ -503,42 +642,28 @@ function startVoiceRecognition() {
   recognition.start();
 }
 
-// Get all the nav links
 const navLinks = document.querySelectorAll(".nav-link");
-
-// Function to remove 'active' class from all links and add to the clicked one
 navLinks.forEach((link) => {
   link.addEventListener("click", function () {
-    // Remove active class from all links
     navLinks.forEach((link) => link.classList.remove("active"));
-
-    // Add active class to the clicked link
     this.classList.add("active");
   });
 });
 
-// model code
 document.addEventListener("DOMContentLoaded", () => {
-  // Get the modal
   const modal = document.getElementById("myModal1");
-
-  // Get the button that opens the modal
   const btn = document.getElementById("openModalButton1");
-
-  // Get the <span> element that closes the modal
   const span = document.getElementsByClassName("close1")[0];
 
-  // When the user clicks the button, open the modal
-  btn.onclick = () => {
-    modal.style.display = "block";
-  };
+  if (btn && modal)
+    btn.onclick = () => {
+      modal.style.display = "block";
+    };
+  if (span && modal)
+    span.onclick = () => {
+      modal.style.display = "none";
+    };
 
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = () => {
-    modal.style.display = "none";
-  };
-
-  // When the user clicks anywhere outside of the modal, close it
   window.onclick = (event) => {
     if (event.target == modal) {
       modal.style.display = "none";
@@ -546,28 +671,27 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
 
-// Sidebar Toggle
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar");
   const backdrop = document.getElementById("sidebar-backdrop");
 
+  if (!sidebar) return;
+
   sidebar.classList.toggle("sidebar-visible");
 
-  // Handle mobile backdrop
   if (window.innerWidth <= 768) {
     if (sidebar.classList.contains("sidebar-visible")) {
       backdrop.classList.add("active");
-      document.body.style.overflow = "hidden"; // Prevent background scrolling
+      document.body.style.overflow = "hidden";
     } else {
       backdrop.classList.remove("active");
       document.body.style.overflow = "auto";
     }
   }
 }
-// Function to track messages in the sidebar
+
 function trackMessage(messageText, sender, timePeriod) {
   let sectionId;
-
   switch (timePeriod) {
     case "today":
       sectionId = "today-messages";
@@ -586,55 +710,42 @@ function trackMessage(messageText, sender, timePeriod) {
   }
 
   const messageList = document.getElementById(sectionId);
+  if (!messageList) return;
   const messageElement = document.createElement("p");
   messageElement.innerText = sender === "user" ? `User: ${messageText}` : ``;
   messageList.appendChild(messageElement);
 }
 
-// Enhanced sendMessage function with LLM integration
 async function sendMessage() {
   const userInput = document.getElementById("userInput");
+  if (!userInput) return;
   const messageText = userInput.value.trim();
 
   if (messageText) {
-    document.getElementById("welcome-page").style.display = "none";
-    document.getElementById("chatBox").style.display = "flex";
+    const welcomeEl = document.getElementById("welcome-page");
+    const chatBoxEl = document.getElementById("chatBox");
+    if (welcomeEl) welcomeEl.style.display = "none";
+    if (chatBoxEl) chatBoxEl.style.display = "flex";
 
-    // Add user message to chat
     addMessage(messageText, "user-message");
     trackMessage(messageText, "user", "today");
 
-    // Add user message to conversation history
     conversationHistory.push({ role: "user", content: messageText });
-
-    // Clear the input field
     userInput.value = "";
 
-    // Show pinwheel loader for bot
     showTypingIndicator();
 
     try {
-      // Get response from LLM
       const botResponse = await callGroqAPI(messageText, conversationHistory);
-
-      // Remove pinwheel loader
       removeTypingIndicator();
-
-      // Add bot response to chat
       addMessage(botResponse, "bot-message");
       trackMessage(botResponse, "bot", "today");
-
-      // Add bot response to conversation history
       conversationHistory.push({ role: "assistant", content: botResponse });
-
-      // Keep conversation history manageable (last 10 exchanges)
-      if (conversationHistory.length > 20) {
-        conversationHistory = conversationHistory.slice(-20);
-      }
+      if (conversationHistory.length > MAX_HISTORY_LENGTH)
+        conversationHistory = conversationHistory.slice(-MAX_HISTORY_LENGTH);
     } catch (error) {
       console.error("Error getting bot response:", error);
       removeTypingIndicator();
-
       const fallbackResponse = getFallbackResponse(messageText);
       addMessage(fallbackResponse, "bot-message");
       trackMessage(fallbackResponse, "bot", "today");
@@ -642,202 +753,269 @@ async function sendMessage() {
   }
 }
 
-// Function to show pinwheel loader
 function showTypingIndicator() {
   const chatBox = document.getElementById("chatBox");
+  if (!chatBox) return;
 
   const loaderContainer = document.createElement("div");
   loaderContainer.classList.add("message", "bot-message", "loader-container");
   loaderContainer.innerHTML = `
     <div class="bot-message">
-      <img src="final-chatbot-logo.png" class="bot-icon" />
+      <img src="assets/images/final-chatbot-logo.png" class="bot-icon" />
       <div class="loader-content">
         <l-pinwheel size="35" stroke="3.5" speed="0.9" color="black"></l-pinwheel>
       </div>
     </div>
   `;
 
-  loaderContainer.setAttribute("id", "typing-indicator"); // Keep same ID for removal
-
+  loaderContainer.setAttribute("id", "typing-indicator");
   chatBox.appendChild(loaderContainer);
-
-  // Scroll to the bottom of the chatbox
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Function to remove pinwheel loader
 function removeTypingIndicator() {
   const typingIndicator = document.getElementById("typing-indicator");
-  if (typingIndicator) {
-    typingIndicator.remove();
-  }
+  if (typingIndicator) typingIndicator.remove();
 }
 
-// Function to add a message to the chatbox with markdown support
 function addMessage(text, className) {
   const chatBox = document.getElementById("chatBox");
+  if (!chatBox) return;
 
   const messageElement = document.createElement("div");
   messageElement.classList.add("message", className);
 
   if (className === "bot-message") {
-    // Create a container for the bot message with icon
     const messageContainer = document.createElement("div");
     messageContainer.classList.add("bot-message");
-
-    // Create the bot icon element
     const botIcon = document.createElement("img");
-    botIcon.src = "final-chatbot-logo.png";
+    botIcon.src = "assets/images/final-chatbot-logo.png";
     botIcon.classList.add("bot-icon");
-
-    // Create message content div
     const messageContent = document.createElement("div");
     messageContent.classList.add("bot-message-content");
-
-    // Parse markdown and set HTML content for bot messages
     if (typeof marked !== "undefined") {
-      messageContent.innerHTML = marked.parse(text);
+      try {
+        messageContent.innerHTML = marked.parse(text);
+      } catch (e) {
+        console.warn("marked parse failed, falling back:", e);
+        messageContent.innerHTML = formatTextAsHTML(text);
+      }
     } else {
-      // Fallback if marked is not loaded
-      messageContent.innerHTML = formatTextAsHTML(text);
+      // Try simple table conversion if md tables are present
+      const tableHtml = convertMarkdownTableToHTML(text);
+      if (tableHtml) {
+        messageContent.innerHTML =
+          tableHtml + formatTextAsHTML(text.replace(/\r?\n/g, "<br>"));
+      } else {
+        messageContent.innerHTML = formatTextAsHTML(text);
+      }
     }
 
-    // Append icon and message content to the container
+    // Add copy button
+    const copyButton = document.createElement("button");
+    copyButton.classList.add("copy-btn");
+    copyButton.innerHTML = '<i class="ri-file-copy-line"></i>';
+    copyButton.setAttribute("title", "Copy response");
+    copyButton.setAttribute("data-text", text);
+    copyButton.onclick = function (e) {
+      e.preventDefault();
+      const textToCopy = this.getAttribute("data-text");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(textToCopy)
+          .then(() => {
+            copyButton.innerHTML = '<i class="ri-check-line"></i>';
+            copyButton.classList.add("copied");
+            setTimeout(() => {
+              copyButton.innerHTML = '<i class="ri-file-copy-line"></i>';
+              copyButton.classList.remove("copied");
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err);
+            fallbackCopy(textToCopy);
+          });
+      } else {
+        fallbackCopy(textToCopy);
+      }
+    };
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        copyButton.innerHTML = '<i class="ri-check-line"></i>';
+        copyButton.classList.add("copied");
+        setTimeout(() => {
+          copyButton.innerHTML = '<i class="ri-file-copy-line"></i>';
+          copyButton.classList.remove("copied");
+        }, 2000);
+      } catch (err) {
+        console.error("Fallback copy failed:", err);
+        alert("Copy failed. Please select and copy manually.");
+      }
+      document.body.removeChild(textarea);
+    }
+
     messageContainer.appendChild(botIcon);
     messageContainer.appendChild(messageContent);
-
-    // Append container to messageElement
+    messageContainer.appendChild(copyButton);
     messageElement.appendChild(messageContainer);
   } else {
-    // For user messages, keep as plain text
     messageElement.textContent = text;
   }
 
   chatBox.appendChild(messageElement);
   scrollToBottom();
   toggleScrollButton();
-
-  // Scroll to the bottom of the chatbox
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// Fallback function to format text as HTML if markdown library is not available
 function formatTextAsHTML(text) {
   return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
-    .replace(/\*(.*?)\*/g, "<em>$1</em>") // Italic
-    .replace(/`(.*?)`/g, "<code>$1</code>") // Code
-    .replace(/^# (.*$)/gim, "<h1>$1</h1>") // H1
-    .replace(/^## (.*$)/gim, "<h2>$1</h2>") // H2
-    .replace(/^### (.*$)/gim, "<h3>$1</h3>") // H3
-    .replace(/^> (.*$)/gim, "<blockquote>$1</blockquote>") // Blockquote
-    .replace(/\n/g, "<br>"); // Line breaks
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/`(.*?)`/g, "<code>$1</code>")
+    .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+    .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+    .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+    .replace(/^> (.*$)/gim, "<blockquote>$1</blockquote>")
+    .replace(/\n/g, "<br>");
+}
+
+// Simple table detector+converter used only when `marked` is not available.
+function convertMarkdownTableToHTML(md) {
+  const lines = md.split(/\r?\n/);
+  // find table start/end (consecutive lines with pipes)
+  let start = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes("|")) {
+      start = i;
+      break;
+    }
+  }
+  if (start === -1) return null;
+  // collect table lines
+  const tableLines = [];
+  for (let i = start; i < lines.length; i++) {
+    if (!lines[i].trim()) break;
+    if (lines[i].includes("|")) tableLines.push(lines[i]);
+    else break;
+  }
+  if (tableLines.length < 2) return null; // need at least header+divider
+
+  const header = tableLines[0]
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const divider = tableLines[1];
+  if (
+    !/^-+:?-+\s*(\|\s*-+:?-+\s*)+$/.test(divider) &&
+    !/^-+\s*(\|\s*-+\s*)+$/.test(divider)
+  ) {
+    return null;
+  }
+
+  const rows = tableLines.slice(2).map((ln) =>
+    ln
+      .split("|")
+      .map((s) => s.trim())
+      .filter(() => true)
+  );
+
+  let html = '<div class="md-table-wrapper"><table><thead><tr>';
+  header.forEach((h) => {
+    html += `<th>${h}</th>`;
+  });
+  html += "</tr></thead><tbody>";
+  rows.forEach((r) => {
+    if (r.length === 0) return;
+    html += "<tr>";
+    // pad or trim
+    for (let i = 0; i < header.length; i++) {
+      html += `<td>${r[i] || ""}</td>`;
+    }
+    html += "</tr>";
+  });
+  html += "</tbody></table></div>";
+  return html;
 }
 
 function scrollToBottom() {
   const chatWindow = document.getElementById("chatBox");
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  if (chatWindow) chatWindow.scrollTop = chatWindow.scrollHeight;
 }
-// Function to toggle the visibility of the scroll button
+
 function toggleScrollButton() {
   const chatWindow = document.getElementById("chatBox");
   const scrollBtn = document.getElementById("scroll-btn");
+  if (!chatWindow || !scrollBtn) return;
 
-  // Show the button if not already at the bottom of the chat
   if (
     chatWindow.scrollHeight - chatWindow.scrollTop >
     chatWindow.clientHeight + 20
   ) {
-    scrollBtn.style.display = "flex"; // Show the button
+    scrollBtn.style.display = "flex";
   } else {
-    scrollBtn.style.display = "none"; // Hide the button
+    scrollBtn.style.display = "none";
   }
 }
-document
-  .getElementById("chatBox")
-  .addEventListener("scroll", toggleScrollButton);
 
-// Function to handle pressing Enter key
+const chatBoxEl = document.getElementById("chatBox");
+if (chatBoxEl) chatBoxEl.addEventListener("scroll", toggleScrollButton);
+
 function handleKeyPress(event) {
-  if (event.key === "Enter") {
-    sendMessage();
-  }
+  if (event.key === "Enter") sendMessage();
 }
 
 const chatInput = document.getElementById("userInput");
+if (chatInput) {
+  chatInput.addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = this.scrollHeight + "px";
+  });
+}
 
-chatInput.addEventListener("input", function () {
-  this.style.height = "auto"; // Reset the height
-  this.style.height = this.scrollHeight + "px"; // Set the height to match the scroll height
-});
-
-// promt suggestion
 document.addEventListener("DOMContentLoaded", () => {
-  // Ensure scroll button is hidden on page load
   const scrollBtn = document.getElementById("scroll-btn");
-  if (scrollBtn) {
-    scrollBtn.style.display = "none";
-  }
-
-  const welcomeMessages = {
-    college:
-      "Welcome! Got questions about our college? I'm here to assist you with admissions, courses, and more. How can I help today?",
-    alumni:
-      "Hello! Curious about our alumni network and their success stories? Let me guide you through our alumni achievements. What would you like to know?",
-    degree:
-      "Hi there! Looking for details on degree programs? Whether it's undergraduate or postgraduate, I've got you covered. What degree information can I help with?",
-    fees: "Welcome! Need help understanding the fee structure for various courses? Ask me anything about fees, scholarships, and payment options.",
-  };
+  if (scrollBtn) scrollBtn.style.display = "none";
 
   const userInput = document.getElementById("userInput");
   const sendButton = document.getElementById("send-btn");
   const suggestions = document.querySelectorAll(".suggestion");
 
   function insertPromptIntoInput(prompt) {
-    userInput.value = prompt;
+    if (userInput) userInput.value = prompt;
   }
 
   suggestions.forEach((suggestion) => {
     suggestion.addEventListener("click", async (event) => {
-      event.preventDefault(); // Prevent default link behavior
+      event.preventDefault();
       const prompt = suggestion.textContent;
-
-      // Hide welcome page and show chat box
-      document.getElementById("welcome-page").style.display = "none";
-      document.getElementById("chatBox").style.display = "flex";
-
-      // Add user message to chat
+      const welcomePage = document.getElementById("welcome-page");
+      const chatBox = document.getElementById("chatBox");
+      if (welcomePage) welcomePage.style.display = "none";
+      if (chatBox) chatBox.style.display = "flex";
       addMessage(prompt, "user-message");
       trackMessage(prompt, "user", "today");
-
-      // Add user message to conversation history
       conversationHistory.push({ role: "user", content: prompt });
-
-      // Show pinwheel loader for bot
       showTypingIndicator();
-
       try {
-        // Get response from LLM
         const botResponse = await callGroqAPI(prompt, conversationHistory);
-
-        // Remove pinwheel loader
         removeTypingIndicator();
-
-        // Add bot response to chat
         addMessage(botResponse, "bot-message");
         trackMessage(botResponse, "bot", "today");
-
-        // Add bot response to conversation history
         conversationHistory.push({ role: "assistant", content: botResponse });
-
-        // Keep conversation history manageable (last 10 exchanges)
-        if (conversationHistory.length > 20) {
-          conversationHistory = conversationHistory.slice(-20);
-        }
+        if (conversationHistory.length > MAX_HISTORY_LENGTH)
+          conversationHistory = conversationHistory.slice(-MAX_HISTORY_LENGTH);
       } catch (error) {
         console.error("Error getting bot response:", error);
         removeTypingIndicator();
-
         const fallbackResponse = getFallbackResponse(prompt);
         addMessage(fallbackResponse, "bot-message");
         trackMessage(fallbackResponse, "bot", "today");
@@ -845,60 +1023,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  sendButton.addEventListener("click", () => {
-    const input = userInput.value.trim().toLowerCase();
-    if (input) {
-      if (input.includes("college")) {
-        setWelcomeMessage("college");
-      } else if (input.includes("alumni")) {
-        setWelcomeMessage("alumni");
-      } else if (input.includes("degree")) {
-        setWelcomeMessage("degree");
-      } else if (input.includes("fees")) {
-        setWelcomeMessage("fees");
-      } else {
-        setWelcomeMessage("");
+  if (sendButton && userInput) {
+    sendButton.addEventListener("click", () => {
+      const input = userInput.value.trim().toLowerCase();
+      if (input) {
+        if (input.includes("college")) setWelcomeMessage("college");
+        else if (input.includes("alumni")) setWelcomeMessage("alumni");
+        else if (input.includes("degree")) setWelcomeMessage("degree");
+        else if (input.includes("fees")) setWelcomeMessage("fees");
+        else setWelcomeMessage("");
+        userInput.value = "";
       }
-      userInput.value = "";
-    }
-  });
+    });
+  }
 
-  // Optionally set a default welcome message
   setWelcomeMessage("");
 });
 
-//new chat button code
 document.addEventListener("DOMContentLoaded", () => {
-  // Get the chatbox and buttons
   const chatbox = document.getElementById("welcome-page");
   const newChatButton = document.getElementById("newChatButton");
   const messagesContainer = document.getElementById("chatBox");
+  if (newChatButton) {
+    // Add keyboard shortcut hint to button
+    newChatButton.setAttribute("title", "New Chat (Ctrl+Shift+O)");
 
-  // Show chatbox when "New Chat" is clicked
-  newChatButton.addEventListener("click", () => {
-    const scrollBtn = document.getElementById("scroll-btn");
-
-    chatbox.style.display = "block"; // Show welcome page
-    messagesContainer.innerHTML = ""; // Clear any previous messages
-    messagesContainer.style.display = "none"; // Hide chat box
-    conversationHistory = []; // Clear conversation history
-
-    // Hide scroll button when creating new chat
-    if (scrollBtn) {
-      scrollBtn.style.display = "none";
-    }
-  });
+    newChatButton.addEventListener("click", () => {
+      const scrollBtn = document.getElementById("scroll-btn");
+      if (chatbox) chatbox.style.display = "block";
+      if (messagesContainer) messagesContainer.innerHTML = "";
+      if (messagesContainer) messagesContainer.style.display = "none";
+      conversationHistory = [];
+      if (scrollBtn) scrollBtn.style.display = "none";
+    });
+  }
 });
 
 function startChat() {
-  // Simulate chatbot initiation, you can redirect to the chatbot page or open a modal
   window.location.href = "index.html";
-  // For real chatbot integration, redirect to chatbot page:
-  // window.location.href = "/chatbot-page.html";
 }
 
-// contact us college script
-// College contact information (can be extended for more colleges)
 const collegeData = {
   "College of Engineering Pune (COEP)": {
     name: "College of Engineering Pune (COEP)",
@@ -925,145 +1089,174 @@ const collegeData = {
     phone: "+91 20 2539 7500",
     email: "info@mitpune.edu.in",
   },
-  // Add more colleges here
 };
 
-// Function to show college contact information
 function showCollegeInfo(event) {
-  event.preventDefault(); // Prevent the form from submitting
-
+  event.preventDefault();
   const collegeName = document.getElementById("collegeName").value;
   const contactInfoDiv = document.getElementById("contactInfo");
-
   if (collegeData[collegeName]) {
-    // Display the contact information for the entered college
     const college = collegeData[collegeName];
-    contactInfoDiv.innerHTML = `
-            <h3>Contact Information for ${college.name}</h3>
-            <p><strong>Address:</strong> ${college.address}</p>
-            <p><strong>Phone:</strong> ${college.phone}</p>
-            <p><strong>Email:</strong> ${college.email}</p>
-        `;
+    if (contactInfoDiv)
+      contactInfoDiv.innerHTML = `\n            <h3>Contact Information for ${college.name}</h3>\n            <p><strong>Address:</strong> ${college.address}</p>\n            <p><strong>Phone:</strong> ${college.phone}</p>\n            <p><strong>Email:</strong> ${college.email}</p>\n        `;
   } else {
-    // If the college name is not found
-    contactInfoDiv.innerHTML = `<p>Sorry, we couldn't find information for "${collegeName}". Please try another college name.</p>`;
+    if (contactInfoDiv)
+      contactInfoDiv.innerHTML = `<p>Sorry, we couldn't find information for "${collegeName}". Please try another college name.</p>`;
   }
-
-  // Clear suggestions when form is submitted
-  document.getElementById("suggestions").style.display = "none";
+  const suggestions = document.getElementById("suggestions");
+  if (suggestions) suggestions.style.display = "none";
 }
 
-// Function to suggest college names as user types
 function suggestCollegeNames() {
   const input = document.getElementById("collegeName").value.toLowerCase();
   const suggestionsDiv = document.getElementById("suggestions");
   const colleges = Object.keys(collegeData);
-
-  suggestionsDiv.innerHTML = ""; // Clear previous suggestions
-
-  // Filter college names that match user input
+  if (!suggestionsDiv) return;
+  suggestionsDiv.innerHTML = "";
   const filteredColleges = colleges.filter((college) =>
     college.toLowerCase().includes(input)
   );
-
-  // Display suggestions if there is input and matching colleges
   if (input && filteredColleges.length > 0) {
     suggestionsDiv.style.display = "block";
-
-    // Create suggestion items
     filteredColleges.forEach((college) => {
       const div = document.createElement("div");
       div.textContent = college;
       div.onclick = function () {
         document.getElementById("collegeName").value = college;
-        suggestionsDiv.style.display = "none"; // Hide suggestions on click
+        suggestionsDiv.style.display = "none";
       };
       suggestionsDiv.appendChild(div);
     });
   } else {
-    suggestionsDiv.style.display = "none"; // Hide if no suggestions
+    suggestionsDiv.style.display = "none";
   }
 }
 
-// setting script
-const settingsButton = document.getElementById("settingsButton");
-const settingsMenu = document.getElementById("settingsMenu");
-const closeMenu = document.getElementById("closeMenu");
+// Language dropdown functionality
+const sidebarLanguageButton = document.getElementById("sidebarLanguageButton");
+const headerLanguageButton = document.getElementById("headerLanguageButton");
+const mobileLanguageBtn = document.getElementById("mobileLanguageButton");
+const languageDropdown = document.getElementById("languageDropdown");
 
-// Open the settings menu
-settingsButton.addEventListener("click", () => {
-  settingsMenu.style.display = "block";
-});
+function toggleLanguageDropdown() {
+  if (languageDropdown) {
+    const isVisible = languageDropdown.style.display === "block";
+    languageDropdown.style.display = isVisible ? "none" : "block";
+  }
+}
 
-// Close the settings menu
-closeMenu.addEventListener("click", () => {
-  settingsMenu.style.display = "none";
-});
+if (sidebarLanguageButton) {
+  sidebarLanguageButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleLanguageDropdown();
+  });
+}
 
-// Close the menu if clicked outside
-window.addEventListener("click", (e) => {
-  if (e.target === settingsMenu) {
-    settingsMenu.style.display = "none";
+if (headerLanguageButton) {
+  headerLanguageButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleLanguageDropdown();
+  });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (
+    languageDropdown &&
+    !languageDropdown.contains(e.target) &&
+    e.target !== sidebarLanguageButton &&
+    e.target !== headerLanguageButton &&
+    e.target !== mobileLanguageBtn &&
+    !e.target.closest("#sidebarLanguageButton") &&
+    !e.target.closest("#headerLanguageButton") &&
+    !e.target.closest("#mobileLanguageButton")
+  ) {
+    languageDropdown.style.display = "none";
   }
 });
 
-// Share button functionality
-document.getElementById("shareButton").addEventListener("click", () => {
-  shareChat();
-});
+// Handle language selection
+const languageOptions = document.querySelectorAll(".language-option");
+languageOptions.forEach((option) => {
+  option.addEventListener("click", (e) => {
+    e.preventDefault();
+    const selectedLang = option.getAttribute("data-lang");
 
-// Theme change functionality (optional)
-document.getElementById("themeSelect").addEventListener("change", (event) => {
-  const theme = event.target.value;
-  document.body.className = theme; // Change the theme by applying class
-});
+    // Update global selected language variable
+    selectedLanguage = selectedLang;
 
-// Language change functionality
-document
-  .getElementById("languageSelect")
-  .addEventListener("change", (event) => {
-    const selectedLanguage = event.target.value;
-    // console.log(`🌐 Language changed to: ${selectedLanguage}`);
+    // Update selected state
+    languageOptions.forEach((opt) => {
+      const icon = opt.querySelector("i");
+      if (opt === option) {
+        icon.className = "ri-checkbox-circle-fill";
+        opt.classList.add("selected");
+      } else {
+        icon.className = "ri-checkbox-blank-circle-line";
+        opt.classList.remove("selected");
+      }
+    });
 
-    // Clear conversation history when language changes
+    // Change language
     conversationHistory = [];
-
-    // Show a message about language change
-    const languageNames = {
-      en: "English",
-      hi: "हिंदी (Hindi)",
-      mr: "मराठी (Marathi)",
-    };
-
     const chatBox = document.getElementById("chatBox");
     if (chatBox && chatBox.style.display !== "none") {
-      // Add a system message about language change
       const systemMessage = document.createElement("div");
       systemMessage.classList.add("message", "system-message");
       systemMessage.style.textAlign = "center";
       systemMessage.style.fontStyle = "italic";
       systemMessage.style.color = "#666";
       systemMessage.style.margin = "10px 0";
-
-      const messages = {
-        en: `Language changed to ${languageNames[selectedLanguage]}. Conversation history cleared.`,
-        hi: `भाषा ${languageNames[selectedLanguage]} में बदल दी गई। बातचीत का इतिहास साफ़ कर दिया गया।`,
-        mr: `भाषा ${languageNames[selectedLanguage]} मध्ये बदलली. संभाषण इतिहास साफ केला.`,
+      const languageNames = {
+        en: "English",
+        hi: "हिंदी (Hindi)",
+        mr: "मराठी (Marathi)",
       };
-
-      systemMessage.textContent = messages[selectedLanguage] || messages["en"];
+      const messages = {
+        en: `Language changed to ${languageNames[selectedLang]}. Conversation history cleared.`,
+        hi: `भाषा ${languageNames[selectedLang]} में बदल दी गई। बातचीत का इतिहास साफ़ कर दिया गया।`,
+        mr: `भाषा ${languageNames[selectedLang]} मध्ये बदलली. संभाषण इतिहास साफ केला.`,
+      };
+      systemMessage.textContent = messages[selectedLang] || messages["en"];
       chatBox.appendChild(systemMessage);
       scrollToBottom();
     }
+    updateSuggestionCards(selectedLang);
+    updateWelcomePageText(selectedLang);
 
-    // Update suggestion cards text based on language
-    updateSuggestionCards(selectedLanguage);
+    // Close dropdown
+    languageDropdown.style.display = "none";
+  });
+});
 
-    // Update welcome page text based on language
-    updateWelcomePageText(selectedLanguage);
+// Initialize selected language on page load
+document.addEventListener("DOMContentLoaded", () => {
+  const defaultLang = "en";
+  const defaultOption = document.querySelector(`[data-lang="${defaultLang}"]`);
+  if (defaultOption) {
+    const icon = defaultOption.querySelector("i");
+    icon.className = "ri-checkbox-circle-fill";
+    defaultOption.classList.add("selected");
+  }
+});
+
+// Keyboard shortcut: Ctrl+Shift+O to open new chat
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "o") {
+    e.preventDefault();
+    const newChatButton = document.getElementById("newChatButton");
+    if (newChatButton) {
+      newChatButton.click();
+    }
+  }
+});
+
+const shareBtn = document.getElementById("shareButton");
+if (shareBtn)
+  shareBtn.addEventListener("click", () => {
+    shareChat();
   });
 
-// Function to update suggestion cards based on language
 function updateSuggestionCards(language) {
   const suggestions = {
     en: [
@@ -1088,15 +1281,12 @@ function updateSuggestionCards(language) {
 
   const suggestionElements = document.querySelectorAll(".suggestion");
   const currentSuggestions = suggestions[language] || suggestions.en;
-
   suggestionElements.forEach((element, index) => {
-    if (currentSuggestions[index]) {
+    if (currentSuggestions[index])
       element.textContent = currentSuggestions[index];
-    }
   });
 }
 
-// Function to update welcome page text based on language
 function updateWelcomePageText(language) {
   const welcomeTexts = {
     en: {
@@ -1115,52 +1305,33 @@ function updateWelcomePageText(language) {
         "पुण्यातील अग्रगण्य अभियांत्रिकी संस्थांबद्दल त्वरित आणि नवीनतम माहिती मिळवा। बुद्धिमान, वैयक्तिक प्रतिसादांसाठी AI द्वारे चालवले जाते. तुमच्यासाठी योग्य महाविद्यालय शोधण्यासाठी सुरुवात करूया.",
     },
   };
-
   const currentTexts = welcomeTexts[language] || welcomeTexts.en;
-
-  // Update welcome page title
   const titleElement = document.querySelector("#welcome-page h3");
-  if (titleElement) {
-    titleElement.textContent = currentTexts.title;
-  }
-
-  // Update welcome page description
+  if (titleElement) titleElement.textContent = currentTexts.title;
   const descriptionElement = document.querySelector("#welcome-page p");
-  if (descriptionElement) {
+  if (descriptionElement)
     descriptionElement.textContent = currentTexts.description;
-  }
 }
 
-// Sidebar functionality for clear history buttons
 document.addEventListener("DOMContentLoaded", function () {
-  // Clear history button in sidebar
   const clearChatSidebarBtn = document.getElementById("clearChatSidebarBtn");
-  if (clearChatSidebarBtn) {
+  if (clearChatSidebarBtn)
     clearChatSidebarBtn.addEventListener("click", function () {
       clearChatHistory();
     });
-  }
-
-  // Clear history button in settings
   const clearHistoryBtn = document.getElementById("clearHistoryBtn");
-  if (clearHistoryBtn) {
+  if (clearHistoryBtn)
     clearHistoryBtn.addEventListener("click", function () {
       clearChatHistory();
     });
-  }
-
-  // New chat button in sidebar
   const newChatSidebarBtn = document.getElementById("newChatSidebarBtn");
-  if (newChatSidebarBtn) {
+  if (newChatSidebarBtn)
     newChatSidebarBtn.addEventListener("click", function () {
       startNewChat();
     });
-  }
-
-  // Expand/collapse functionality for history section
   const historyExpandBtn = document.getElementById("historyExpandBtn");
   const historyContent = document.getElementById("historyContent");
-  if (historyExpandBtn && historyContent) {
+  if (historyExpandBtn && historyContent)
     historyExpandBtn.addEventListener("click", function () {
       const isExpanded = historyContent.style.display !== "none";
       if (isExpanded) {
@@ -1171,77 +1342,40 @@ document.addEventListener("DOMContentLoaded", function () {
         historyExpandBtn.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
       }
     });
-  }
-
-  // Expand/collapse functionality for saved section
-  const savedExpandBtn = document.getElementById("savedExpandBtn");
-  const savedContent = document.getElementById("savedContent");
-  if (savedExpandBtn && savedContent) {
-    savedExpandBtn.addEventListener("click", function () {
-      const isExpanded = savedContent.style.display !== "none";
-      if (isExpanded) {
-        savedContent.style.display = "none";
-        savedExpandBtn.innerHTML = '<i class="ri-arrow-right-s-line"></i>';
-      } else {
-        savedContent.style.display = "block";
-        savedExpandBtn.innerHTML = '<i class="ri-arrow-down-s-line"></i>';
-      }
-    });
-  }
 });
 
-// Function to clear chat history
 function clearChatHistory() {
   const chatBox = document.getElementById("chatBox");
   const welcomePage = document.getElementById("welcome-page");
   const scrollBtn = document.getElementById("scroll-btn");
-
   if (chatBox) {
     chatBox.innerHTML = "";
     chatBox.style.display = "none";
   }
-
-  if (welcomePage) {
-    welcomePage.style.display = "block";
-  }
-
-  // Hide scroll button when clearing chat
-  if (scrollBtn) {
-    scrollBtn.style.display = "none";
-  }
-
-  // Clear conversation history
+  if (welcomePage) welcomePage.style.display = "block";
+  if (scrollBtn) scrollBtn.style.display = "none";
   conversationHistory = [];
-
-  // Clear message lists in sidebar
   const todayMessages = document.getElementById("today-messages");
   const yesterdayMessages = document.getElementById("yesterday-messages");
   const weekMessages = document.getElementById("week-messages");
-
   if (todayMessages) todayMessages.innerHTML = "";
   if (yesterdayMessages) yesterdayMessages.innerHTML = "";
   if (weekMessages) weekMessages.innerHTML = "";
-
-  // Show confirmation message
   alert("Chat history cleared successfully!");
 }
 
-// Function to start a new chat
 function startNewChat() {
   clearChatHistory();
 }
 
-// Handle window resize for sidebar backdrop
 window.addEventListener("resize", function () {
   const sidebar = document.getElementById("sidebar");
   const backdrop = document.getElementById("sidebar-backdrop");
-
+  if (!sidebar || !backdrop) return;
   if (window.innerWidth > 768) {
-    // Desktop view - remove backdrop and restore scrolling
     backdrop.classList.remove("active");
     document.body.style.overflow = "auto";
   } else {
-    // Mobile view - maintain backdrop state based on sidebar visibility
     if (sidebar.classList.contains("sidebar-visible")) {
       backdrop.classList.add("active");
       document.body.style.overflow = "hidden";
@@ -1249,26 +1383,19 @@ window.addEventListener("resize", function () {
   }
 });
 
-// Additional action button functionality
 document.addEventListener("DOMContentLoaded", function () {
-  // Export Chat Button
   const exportChatBtn = document.getElementById("exportChatBtn");
-  if (exportChatBtn) {
+  if (exportChatBtn)
     exportChatBtn.addEventListener("click", function () {
       exportChatHistory();
     });
-  }
-
-  // Send Feedback Button
   const feedbackBtn = document.getElementById("feedbackBtn");
-  if (feedbackBtn) {
+  if (feedbackBtn)
     feedbackBtn.addEventListener("click", function () {
       openFeedbackForm();
     });
-  }
 });
 
-// Function to share chatbot
 function shareChat() {
   if (navigator.share) {
     navigator
@@ -1289,10 +1416,8 @@ function shareChat() {
   }
 }
 
-// Fallback share function
 function fallbackShare() {
   const shareText = `Check out VIDHUR AI - Your gateway to Pune's best engineering institutions! ${window.location.href}`;
-
   if (navigator.clipboard) {
     navigator.clipboard
       .writeText(shareText)
@@ -1307,35 +1432,31 @@ function fallbackShare() {
   }
 }
 
-// Manual copy prompt
 function promptManualCopy(text) {
   const textarea = document.createElement("textarea");
   textarea.value = text;
   document.body.appendChild(textarea);
   textarea.select();
-
   try {
     document.execCommand("copy");
     alert("🔗 Share link copied to clipboard!\n\n" + text);
   } catch (err) {
     alert("📋 Please copy this link manually:\n\n" + text);
   }
-
   document.body.removeChild(textarea);
 }
 
-// Function to export chat history
 function exportChatHistory() {
   const chatBox = document.getElementById("chatBox");
   if (!chatBox || chatBox.children.length === 0) {
     alert("📝 No chat history to export. Start a conversation first!");
     return;
   }
-
-  let exportText = "VIDHUR AI - College Assistant Chat Export\n";
-  exportText += "=".repeat(50) + "\n";
-  exportText += `Export Date: ${new Date().toLocaleString()}\n\n`;
-
+  let exportText =
+    "VIDHUR AI - College Assistant Chat Export\n" +
+    "=".repeat(50) +
+    "\n" +
+    `Export Date: ${new Date().toLocaleString()}\n\n`;
   const messages = chatBox.children;
   for (let i = 0; i < messages.length; i++) {
     const message = messages[i];
@@ -1343,18 +1464,13 @@ function exportChatHistory() {
       exportText += `👤 USER: ${message.textContent.trim()}\n\n`;
     } else if (message.classList.contains("bot-message")) {
       const content = message.querySelector(".bot-message-content");
-      if (content) {
+      if (content)
         exportText += `🤖 VIDHUR AI: ${content.textContent.trim()}\n\n`;
-      }
     } else if (message.classList.contains("system-message")) {
       exportText += `🔔 SYSTEM: ${message.textContent.trim()}\n\n`;
     }
   }
-
-  exportText += "=".repeat(50) + "\n";
-  exportText += "Generated by VIDHUR AI - DataDynamos Team";
-
-  // Create and download file
+  exportText += "=".repeat(50) + "\nGenerated by VIDHUR AI - DataDynamos Team";
   const blob = new Blob([exportText], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -1364,33 +1480,402 @@ function exportChatHistory() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-
   alert("📁 Chat history exported successfully!");
 }
 
-// Function to open feedback form
 function openFeedbackForm() {
-  const feedback = prompt(`📝 We'd love to hear your feedback about VIDHUR AI!
-
-Please share your thoughts about:
-• How helpful were the responses?
-• What features would you like to see?
-• Any suggestions for improvement?
-
-Your feedback:`);
-
+  const feedback = prompt(
+    `📝 We'd love to hear your feedback about VIDHUR AI!\n\nPlease share your thoughts about:\n• How helpful were the responses?\n• What features would you like to see?\n• Any suggestions for improvement?\n\nYour feedback:`
+  );
   if (feedback && feedback.trim()) {
-    // Simulate sending feedback
     setTimeout(() => {
-      alert(`✅ Thank you for your feedback!
-
-Your message: "${feedback.trim()}"
-
-We appreciate your input and will use it to improve VIDHUR AI. Our team will review your feedback and consider it for future updates.
-
-- DataDynamos Team`);
+      alert(
+        `✅ Thank you for your feedback!\n\nYour message: "${feedback.trim()}"\n\nWe appreciate your input and will use it to improve VIDHUR AI. Our team will review your feedback and consider it for future updates.\n\n- DataDynamos Team`
+      );
     }, 500);
   } else if (feedback !== null) {
     alert("📝 Please provide some feedback to help us improve!");
   }
 }
+
+function setWelcomeMessage(type) {
+  const welcomeMessages = {
+    college:
+      "Welcome! Got questions about our college? I'm here to assist you with admissions, courses, and more. How can I help today?",
+    alumni:
+      "Hello! Curious about our alumni network and their success stories? Let me guide you through our alumni achievements. What would you like to know?",
+    degree:
+      "Hi there! Looking for details on degree programs? Whether it's undergraduate or postgraduate, I've got you covered. What degree information can I help with?",
+    fees: "Welcome! Need help understanding the fee structure for various courses? Ask me anything about fees, scholarships, and payment options.",
+  };
+  const message = welcomeMessages[type] || "";
+  const userInput = document.getElementById("userInput");
+  if (userInput) userInput.value = message;
+}
+
+// ==================== COMPARE TOOL FUNCTIONALITY ====================
+
+// Compare Tool DOM Elements
+const compareToolButton = document.getElementById("compareToolButton");
+const compareModal = document.getElementById("compareModal");
+const compareBackdrop = document.getElementById("compareBackdrop");
+const compareCloseBtn = document.getElementById("compareCloseBtn");
+const college1Select = document.getElementById("college1Select");
+const college2Select = document.getElementById("college2Select");
+const startCompareBtn = document.getElementById("startCompareBtn");
+
+// Open Compare Modal
+function openCompareModal() {
+  if (compareModal) {
+    compareModal.style.display = "flex";
+    if (compareBackdrop) compareBackdrop.style.display = "block";
+    document.body.style.overflow = "hidden";
+    setTimeout(() => {
+      initializeCustomDropdowns();
+    }, 100);
+  }
+}
+
+// Close Compare Modal
+function closeCompareModal() {
+  if (compareModal) {
+    compareModal.style.display = "none";
+    if (compareBackdrop) compareBackdrop.style.display = "none";
+    document.body.style.overflow = "auto";
+
+    // Reset hidden inputs
+    const college1Hidden = document.getElementById("college1Select");
+    const college2Hidden = document.getElementById("college2Select");
+    if (college1Hidden) college1Hidden.value = "";
+    if (college2Hidden) college2Hidden.value = "";
+
+    // Reset dropdown displays
+    const selected1 = document.querySelector("#customDropdown1 .selected-text");
+    const selected2 = document.querySelector("#customDropdown2 .selected-text");
+    if (selected1) {
+      selected1.textContent = "Select first college...";
+      selected1.classList.remove("has-value");
+    }
+    if (selected2) {
+      selected2.textContent = "Select second college...";
+      selected2.classList.remove("has-value");
+    }
+
+    if (startCompareBtn) startCompareBtn.disabled = true;
+  }
+}
+
+// Validate college selections
+function validateSelections() {
+  const college1 = college1Select ? college1Select.value : "";
+  const college2 = college2Select ? college2Select.value : "";
+
+  if (startCompareBtn) {
+    // Enable button only if both are selected and different
+    startCompareBtn.disabled = !(college1 && college2 && college1 !== college2);
+  }
+}
+
+// Start comparison
+async function startComparison() {
+  const college1 = college1Select ? college1Select.value : "";
+  const college2 = college2Select ? college2Select.value : "";
+
+  if (!college1 || !college2) {
+    alert("Please select both colleges to compare.");
+    return;
+  }
+
+  if (college1 === college2) {
+    alert("Please select two different colleges to compare.");
+    return;
+  }
+
+  // Close modal
+  closeCompareModal();
+
+  // Show welcome page as chat
+  const welcomeEl = document.getElementById("welcome-page");
+  const chatBoxEl = document.getElementById("chatBox");
+  if (welcomeEl) welcomeEl.style.display = "none";
+  if (chatBoxEl) chatBoxEl.style.display = "flex";
+
+  // Add user message
+  const userMessage = `Compare ${college1} vs ${college2}`;
+  addMessage(userMessage, "user-message");
+  trackMessage(userMessage, "user", "today");
+
+  // Show loading
+  showTypingIndicator();
+
+  try {
+    // Call comparison API
+    const comparisonResult = await callComparisonAPI(college1, college2);
+
+    removeTypingIndicator();
+    addMessage(comparisonResult, "bot-message");
+    trackMessage(comparisonResult, "bot", "today");
+
+    // Add to conversation history
+    conversationHistory.push({ role: "user", content: userMessage });
+    conversationHistory.push({ role: "assistant", content: comparisonResult });
+
+    if (conversationHistory.length > MAX_HISTORY_LENGTH) {
+      conversationHistory = conversationHistory.slice(-MAX_HISTORY_LENGTH);
+    }
+  } catch (error) {
+    console.error("Comparison error:", error);
+    removeTypingIndicator();
+    const fallbackResponse = getComparisonFallback(college1, college2);
+    addMessage(fallbackResponse, "bot-message");
+  }
+}
+
+// Event Listeners for Compare Tool
+if (compareToolButton) {
+  compareToolButton.addEventListener("click", openCompareModal);
+}
+
+if (compareCloseBtn) {
+  compareCloseBtn.addEventListener("click", closeCompareModal);
+}
+
+if (compareBackdrop) {
+  compareBackdrop.addEventListener("click", closeCompareModal);
+}
+
+if (startCompareBtn) {
+  startCompareBtn.addEventListener("click", startComparison);
+}
+
+// Custom Searchable Dropdown Functionality
+function initializeCustomDropdowns() {
+  // Initialize both dropdowns
+  initDropdown("customDropdown1", "college1Select");
+  initDropdown("customDropdown2", "college2Select");
+}
+
+function initDropdown(dropdownId, hiddenInputId) {
+  const customDropdown = document.getElementById(dropdownId);
+  if (!customDropdown) return;
+
+  const dropdownSelected = customDropdown.querySelector(".dropdown-selected");
+  const dropdownOptions = customDropdown.querySelector(".dropdown-options");
+  const dropdownSearch = customDropdown.querySelector(".dropdown-search");
+  const optionsList = customDropdown.querySelector(".options-list");
+  const selectedText = customDropdown.querySelector(".selected-text");
+  const hiddenInput = document.getElementById(hiddenInputId);
+
+  // Get all college options from the original select element
+  const originalSelect = customDropdown.querySelector("select");
+  if (!originalSelect) return;
+
+  const colleges = [];
+  for (let i = 0; i < originalSelect.options.length; i++) {
+    const option = originalSelect.options[i];
+    if (option.value) {
+      // Skip empty placeholder options
+      colleges.push({
+        value: option.value,
+        text: option.text.trim(),
+      });
+    }
+  }
+
+  // Populate the options list
+  function populateOptions(filter = "") {
+    optionsList.innerHTML = "";
+    const filterLower = filter.toLowerCase();
+    let hasResults = false;
+
+    colleges.forEach((college) => {
+      if (college.text.toLowerCase().includes(filterLower)) {
+        hasResults = true;
+        const li = document.createElement("li");
+        li.textContent = college.text;
+        li.dataset.value = college.value;
+
+        li.addEventListener("click", () => {
+          selectOption(college.value, college.text);
+        });
+
+        optionsList.appendChild(li);
+      }
+    });
+
+    if (!hasResults) {
+      const noResultsLi = document.createElement("li");
+      noResultsLi.className = "no-results";
+      noResultsLi.textContent = "No colleges found";
+      optionsList.appendChild(noResultsLi);
+    }
+  }
+
+  function selectOption(value, text) {
+    hiddenInput.value = value;
+    selectedText.textContent = text;
+    selectedText.classList.add("has-value");
+    closeDropdown();
+    validateSelections();
+  }
+
+  function openDropdown() {
+    dropdownSelected.classList.add("active");
+    dropdownOptions.classList.add("show");
+    dropdownSearch.value = "";
+    populateOptions();
+    setTimeout(() => dropdownSearch.focus(), 100);
+  }
+
+  function closeDropdown() {
+    dropdownSelected.classList.remove("active");
+    dropdownOptions.classList.remove("show");
+  }
+
+  // Toggle dropdown
+  dropdownSelected.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = dropdownOptions.classList.contains("show");
+
+    // Close all dropdowns first
+    document.querySelectorAll(".dropdown-options.show").forEach((dropdown) => {
+      dropdown.classList.remove("show");
+      dropdown.previousElementSibling.classList.remove("active");
+    });
+
+    if (!isOpen) {
+      openDropdown();
+    }
+  });
+
+  // Search functionality
+  dropdownSearch.addEventListener("input", (e) => {
+    populateOptions(e.target.value);
+  });
+
+  // Prevent dropdown from closing when clicking inside options
+  dropdownOptions.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  // Initial population
+  populateOptions();
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener("click", () => {
+  document.querySelectorAll(".dropdown-options.show").forEach((dropdown) => {
+    dropdown.classList.remove("show");
+    dropdown.previousElementSibling.classList.remove("active");
+  });
+});
+
+// Close modal on Escape key and close dropdowns
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    // Close any open dropdowns
+    document.querySelectorAll(".dropdown-options.show").forEach((dropdown) => {
+      dropdown.classList.remove("show");
+      dropdown.previousElementSibling.classList.remove("active");
+    });
+
+    // Close compare modal if open
+    if (compareModal && compareModal.style.display === "flex") {
+      closeCompareModal();
+    }
+  }
+});
+
+// Expose some helpers for debugging (optional)
+window.VIDHUR = {
+  sendMessage,
+  clearChatHistory,
+  startNewChat,
+  callGroqAPI,
+  callComparisonAPI,
+};
+
+// Mobile Header Functionality
+const mobileFeaturesButton = document.getElementById("mobileFeaturesButton");
+const mobileFeaturesDropdown = document.getElementById(
+  "mobileFeaturesDropdown"
+);
+const mobileLanguageButton = document.getElementById("mobileLanguageButton");
+const mobileNewChatButton = document.getElementById("mobileNewChatButton");
+const mobileCompareToolButton = document.getElementById(
+  "mobileCompareToolButton"
+);
+const comingSoonToast = document.getElementById("comingSoonToast");
+
+// Toggle mobile features dropdown
+if (mobileFeaturesButton) {
+  mobileFeaturesButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    mobileFeaturesDropdown.classList.toggle("show");
+    mobileFeaturesButton.classList.toggle("active");
+  });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (
+    mobileFeaturesDropdown &&
+    !mobileFeaturesDropdown.contains(e.target) &&
+    e.target !== mobileFeaturesButton &&
+    !mobileFeaturesButton.contains(e.target)
+  ) {
+    mobileFeaturesDropdown.classList.remove("show");
+    mobileFeaturesButton.classList.remove("active");
+  }
+});
+
+// Mobile language button - open language dropdown
+if (mobileLanguageButton) {
+  mobileLanguageButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleLanguageDropdown();
+  });
+}
+
+// Mobile new chat button
+if (mobileNewChatButton) {
+  mobileNewChatButton.addEventListener("click", () => {
+    startNewChat();
+    mobileFeaturesDropdown.classList.remove("show");
+    mobileFeaturesButton.classList.remove("active");
+  });
+}
+
+// Mobile compare tool button
+if (mobileCompareToolButton) {
+  mobileCompareToolButton.addEventListener("click", () => {
+    openCompareModal();
+    mobileFeaturesDropdown.classList.remove("show");
+    mobileFeaturesButton.classList.remove("active");
+  });
+}
+
+// Coming soon functionality
+function showComingSoonToast() {
+  if (comingSoonToast) {
+    comingSoonToast.classList.add("show");
+    setTimeout(() => {
+      comingSoonToast.classList.remove("show");
+    }, 2000);
+  }
+}
+
+// Add coming soon handlers to all coming-soon buttons
+document.querySelectorAll(".coming-soon-btn").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    showComingSoonToast();
+    // Close mobile dropdown if open
+    if (mobileFeaturesDropdown) {
+      mobileFeaturesDropdown.classList.remove("show");
+    }
+    if (mobileFeaturesButton) {
+      mobileFeaturesButton.classList.remove("active");
+    }
+  });
+});

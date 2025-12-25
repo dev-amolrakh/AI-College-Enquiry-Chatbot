@@ -47,15 +47,20 @@
 
 ```
 AI-College-Enquiry-Chatbot/
-├── index.html              # Main application entry point
-├── chatbot.js              # Core chatbot logic and AI integration
-├── style.css               # Comprehensive styling and responsive design
-├── config.js               # Configuration and API settings
-├── SETUP_INSTRUCTIONS.md   # Detailed setup guide
-├── AVAILABLE_MODELS.md     # AI model options and specifications
-├── test-server.html        # Debug and testing interface
-├── start-server.bat        # Windows server startup script
-└── README.md               # Project documentation
+├── index.html                     # Main application entry point
+├── src/
+│   └── js/
+│       └── chatbot.js             # Core chatbot logic and AI integration (modular)
+├── assets/
+│   └── images/                    # Centralized images used by the UI
+├── style.css                      # Comprehensive styling and responsive design
+├── config.js                      # Configuration and API settings
+├── SETUP_INSTRUCTIONS.md          # Detailed setup guide
+├── AVAILABLE_MODELS.md            # AI model options and specifications
+├── scripts/                       # Helper scripts (organize assets, etc.)
+├── archive/                       # Archived/dev files (debug pages, old chatbot.js)
+├── start-server.bat               # Windows server startup script
+└── README.md                      # Project documentation
 ```
 
 ### **🔍 Detailed File Analysis**
@@ -88,16 +93,16 @@ AI-College-Enquiry-Chatbot/
 - CDN integration for external libraries
 - Event-driven architecture
 
-#### **2. chatbot.js (1,397 lines)**
+#### **2. src/js/chatbot.js (refactored, ~1,397 lines)**
 
-**Purpose**: Core application logic and AI integration
+**Purpose**: Core application logic and AI integration (moved to `src/js/chatbot.js`)
 
 **Key Modules**:
 
 **A. API Configuration & LLM Integration**
 
 ```javascript
-const GROQ_API_KEY = "YOUR_API_KEY";
+const GROQ_API_KEY = "YOUR_API_KEY"; // set in src/js/chatbot.js
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL_NAME = "llama-3.1-8b-instant";
 ```
@@ -370,9 +375,9 @@ The chatbot has comprehensive knowledge about:
 - **User Engagement**: Chat session length and message count
 - **Feature Usage**: Voice input, export, language switching
 
-### **Debugging Tools**
+-### **Debugging Tools**
 
-- **Debug Panel**: `test-server.html` for diagnostics
+- **Debug Panel**: `test-server.html` (moved to `archive/test-server.html` for reference) — prefer using browser DevTools console for live diagnostics
 - **Console Logging**: Detailed error tracking
 - **Network Monitoring**: API call inspection
 - **Browser DevTools**: Performance profiling

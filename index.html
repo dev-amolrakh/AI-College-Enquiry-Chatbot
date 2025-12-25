@@ -7,7 +7,7 @@
     <link
       rel="shortcut icon"
       type="image/x-icon"
-      href="final-chatbot-logo.png"
+      href="assets/images/final-chatbot-logo.png"
     />
     <link rel="stylesheet" href="style.css" />
     <link
@@ -30,7 +30,7 @@
         <div class="modal-header">
           <div class="header-content">
             <img
-              src="final-chatbot-logo.png"
+              src="assets/images/final-chatbot-logo.png"
               alt="VIDHUR AI Logo"
               class="modal-logo"
             />
@@ -157,11 +157,19 @@
             <h4><i class="ri-cpu-line"></i> Powered By Advanced Technology</h4>
             <div class="tech-stack">
               <div class="tech-item">
-                <img src="langchain.png" alt="LangChain" class="tech-logo" />
+                <img
+                  src="assets/images/langchain.png"
+                  alt="LangChain"
+                  class="tech-logo"
+                />
                 <span>LangChain</span>
               </div>
               <div class="tech-item">
-                <img src="llama icon.png" alt="Llama AI" class="tech-logo" />
+                <img
+                  src="assets/images/llama-icon.png"
+                  alt="Llama AI"
+                  class="tech-logo"
+                />
                 <span>Llama AI</span>
               </div>
               <div class="tech-item">
@@ -214,92 +222,699 @@
       </div>
     </div>
 
-    <!-- Enhanced Settings Menu -->
-    <div id="settingsMenu" class="settings-menu">
-      <div class="menu-header">
-        <div class="header-content">
-          <i class="ri-settings-3-line"></i>
-          <h4>Settings & Preferences</h4>
-        </div>
-        <span class="close-btn" id="closeMenu">&times;</span>
+    <!-- Language Dropdown Menu -->
+    <div id="languageDropdown" class="language-dropdown">
+      <div class="language-dropdown-header">
+        <i class="ri-translate-2"></i>
+        <span>Select Language</span>
       </div>
-      <div class="menu-content">
-        <!-- Appearance Section -->
-        <div class="settings-section">
-          <h5><i class="ri-palette-line"></i> Appearance</h5>
-          <div class="form-group">
-            <label for="themeSelect">Theme</label>
-            <select id="themeSelect">
-              <option value="light">☀️ Light</option>
-              <option value="dark">🌙 Dark</option>
-              <option value="system">💻 System</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="languageSelect">Language</label>
-            <select id="languageSelect">
-              <option value="en">🇺🇸 English</option>
-              <option value="hi">🇮🇳 हिंदी (Hindi)</option>
-              <option value="mr">🇮🇳 मराठी (Marathi)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="fontSizeSelect">Font Size</label>
-            <select id="fontSizeSelect">
-              <option value="small">Small</option>
-              <option value="medium" selected>Medium</option>
-              <option value="large">Large</option>
-            </select>
-          </div>
-        </div>
+      <div class="language-options">
+        <button class="language-option" data-lang="en">
+          <i class="ri-checkbox-blank-circle-line"></i>
+          <span>🇺🇸 English</span>
+        </button>
+        <button class="language-option" data-lang="hi">
+          <i class="ri-checkbox-blank-circle-line"></i>
+          <span>🇮🇳 हिंदी (Hindi)</span>
+        </button>
+        <button class="language-option" data-lang="mr">
+          <i class="ri-checkbox-blank-circle-line"></i>
+          <span>🇮🇳 मराठी (Marathi)</span>
+        </button>
+      </div>
+    </div>
 
-        <!-- Chat Settings Section -->
-        <div class="settings-section">
-          <h5><i class="ri-chat-3-line"></i> Chat Settings</h5>
-          <div class="form-group">
-            <label for="autoVoiceToggle">Auto Voice Response</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="autoVoiceToggle" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="form-group">
-            <label for="soundToggle">Sound Effects</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="soundToggle" checked />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="form-group">
-            <label for="typingSpeedSelect">Typing Speed</label>
-            <select id="typingSpeedSelect">
-              <option value="slow">Slow</option>
-              <option value="medium" selected>Medium</option>
-              <option value="fast">Fast</option>
-            </select>
-          </div>
+    <!-- Compare Tool Modal -->
+    <div id="compareBackdrop" class="compare-backdrop"></div>
+    <div id="compareModal" class="compare-modal">
+      <div class="compare-modal-content">
+        <div class="compare-modal-header">
+          <h2><i class="ri-scales-3-line"></i> Compare Colleges</h2>
+          <button class="compare-close-btn" id="compareCloseBtn">
+            &times;
+          </button>
         </div>
+        <div class="compare-modal-body">
+          <div class="compare-intro">
+            <p>
+              Select two engineering colleges to get a detailed comparison
+              including placements, fees, rankings, facilities, and personalized
+              recommendations.
+            </p>
+          </div>
 
-        <!-- Actions Section -->
-        <div class="settings-section">
-          <h5><i class="ri-tools-line"></i> Actions</h5>
-          <div class="action-buttons">
-            <button id="clearHistoryBtn" class="action-btn danger">
-              <i class="ri-delete-bin-line"></i>
-              Clear Chat History
-            </button>
-            <button id="exportChatBtn" class="action-btn primary">
-              <i class="ri-download-line"></i>
-              Export Chat
-            </button>
-            <button id="shareButton" class="action-btn success">
-              <i class="ri-share-line"></i>
-              Share Chatbot
-            </button>
-            <button id="feedbackBtn" class="action-btn secondary">
-              <i class="ri-feedback-line"></i>
-              Send Feedback
-            </button>
+          <div class="compare-dropdowns">
+            <div class="compare-select-wrapper">
+              <label>College 1</label>
+              <div class="custom-dropdown" id="customDropdown1">
+                <div class="dropdown-selected" id="dropdownSelected1">
+                  <span class="selected-text">Select first college...</span>
+                  <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdown-options" id="dropdownOptions1">
+                  <div class="dropdown-search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input
+                      type="text"
+                      class="dropdown-search"
+                      placeholder="Type to search..."
+                      autocomplete="off"
+                    />
+                  </div>
+                  <ul class="options-list"></ul>
+                </div>
+                <select style="display: none">
+                  <option value="">Select first college...</option>
+                  <!-- Top Government Colleges -->
+                  <option value="College of Engineering Pune (COEP)">
+                    College of Engineering Pune (COEP)
+                  </option>
+                  <option value="Government College of Engineering Pune">
+                    Government College of Engineering Pune
+                  </option>
+                  <!-- Top Private Colleges -->
+                  <option value="Pune Institute of Computer Technology (PICT)">
+                    Pune Institute of Computer Technology (PICT)
+                  </option>
+                  <option value="Vishwakarma Institute of Technology (VIT)">
+                    Vishwakarma Institute of Technology (VIT)
+                  </option>
+                  <option value="Maharashtra Institute of Technology (MIT)">
+                    Maharashtra Institute of Technology (MIT)
+                  </option>
+                  <option value="Symbiosis Institute of Technology (SIT)">
+                    Symbiosis Institute of Technology (SIT)
+                  </option>
+                  <option value="Cummins College of Engineering for Women">
+                    Cummins College of Engineering for Women
+                  </option>
+                  <option value="Army Institute of Technology (AIT)">
+                    Army Institute of Technology (AIT)
+                  </option>
+                  <!-- Bharati Vidyapeeth Group -->
+                  <option value="Bharati Vidyapeeth College of Engineering">
+                    Bharati Vidyapeeth College of Engineering
+                  </option>
+                  <option value="Bharati Vidyapeeth Deemed University COE">
+                    Bharati Vidyapeeth Deemed University COE
+                  </option>
+                  <!-- Sinhgad Group -->
+                  <option value="Sinhgad College of Engineering (SCOE)">
+                    Sinhgad College of Engineering (SCOE)
+                  </option>
+                  <option
+                    value="Sinhgad Institute of Technology (SIT Lonavala)"
+                  >
+                    Sinhgad Institute of Technology (SIT Lonavala)
+                  </option>
+                  <option
+                    value="Sinhgad Institute of Technology and Science (SITS)"
+                  >
+                    Sinhgad Institute of Technology and Science (SITS)
+                  </option>
+                  <option value="NBN Sinhgad School of Engineering">
+                    NBN Sinhgad School of Engineering
+                  </option>
+                  <option value="Sinhgad Academy of Engineering (SAE)">
+                    Sinhgad Academy of Engineering (SAE)
+                  </option>
+                  <option value="SKN Sinhgad College of Engineering">
+                    SKN Sinhgad College of Engineering
+                  </option>
+                  <!-- JSPM Group -->
+                  <option value="JSPM Rajarshi Shahu College of Engineering">
+                    JSPM Rajarshi Shahu College of Engineering
+                  </option>
+                  <option value="JSPM Narhe Technical Campus">
+                    JSPM Narhe Technical Campus
+                  </option>
+                  <option
+                    value="JSPM Bhivarabai Sawant Institute of Technology"
+                  >
+                    JSPM Bhivarabai Sawant Institute of Technology
+                  </option>
+                  <option
+                    value="JSPM's Imperial College of Engineering Wagholi"
+                  >
+                    JSPM's Imperial College of Engineering Wagholi
+                  </option>
+                  <!-- PCCOE Group -->
+                  <option
+                    value="PCCOE - Pimpri Chinchwad College of Engineering"
+                  >
+                    PCCOE - Pimpri Chinchwad College of Engineering
+                  </option>
+                  <option value="PCCOER - PCCoE Ravet">
+                    PCCOER - PCCoE Ravet
+                  </option>
+                  <!-- D.Y. Patil Group - ALL Campuses -->
+                  <option value="D.Y. Patil College of Engineering Akurdi">
+                    D.Y. Patil College of Engineering Akurdi
+                  </option>
+                  <option value="D.Y. Patil College of Engineering Pimpri">
+                    D.Y. Patil College of Engineering Pimpri
+                  </option>
+                  <option
+                    value="D.Y. Patil College of Engineering Lohegaon (Ajeenky)"
+                  >
+                    D.Y. Patil College of Engineering Lohegaon (Ajeenky)
+                  </option>
+                  <option value="D.Y. Patil College of Engineering Ambi">
+                    D.Y. Patil College of Engineering Ambi
+                  </option>
+                  <option
+                    value="D.Y. Patil Institute of Engineering & Technology Pimpri"
+                  >
+                    D.Y. Patil Institute of Engineering & Technology Pimpri
+                  </option>
+                  <option
+                    value="Ramrao Adik Institute of Technology (D.Y. Patil Nerul)"
+                  >
+                    Ramrao Adik Institute of Technology (D.Y. Patil Nerul)
+                  </option>
+                  <option
+                    value="Padmabhooshan Vasantdada Patil Institute of Technology"
+                  >
+                    Padmabhooshan Vasantdada Patil Institute of Technology
+                  </option>
+                  <option value="Dr. D.Y. Patil School of Engineering Lohegaon">
+                    Dr. D.Y. Patil School of Engineering Lohegaon
+                  </option>
+                  <option
+                    value="Padmashree Dr. D.Y. Patil Institute of Engineering Pimpri"
+                  >
+                    Padmashree Dr. D.Y. Patil Institute of Engineering Pimpri
+                  </option>
+                  <!-- Vishwakarma Group -->
+                  <option
+                    value="Vishwakarma Institute of Information Technology (VIIT)"
+                  >
+                    Vishwakarma Institute of Information Technology (VIIT)
+                  </option>
+                  <!-- Other Major Colleges -->
+                  <option value="AISSMS College of Engineering">
+                    AISSMS College of Engineering
+                  </option>
+                  <option value="AISSMS Institute of Information Technology">
+                    AISSMS Institute of Information Technology
+                  </option>
+                  <option value="Indira College of Engineering and Management">
+                    Indira College of Engineering and Management
+                  </option>
+                  <option value="Modern Education Society's COE (MESCOE)">
+                    Modern Education Society's COE (MESCOE)
+                  </option>
+                  <option value="PVG's College of Engineering Nasik Road">
+                    PVG's College of Engineering Nasik Road
+                  </option>
+                  <option value="Marathwada Mitra Mandal's COE (MMCOE)">
+                    Marathwada Mitra Mandal's COE (MMCOE)
+                  </option>
+                  <option value="Zeal College of Engineering and Research">
+                    Zeal College of Engineering and Research
+                  </option>
+                  <option value="Trinity College of Engineering and Research">
+                    Trinity College of Engineering and Research
+                  </option>
+                  <option value="Flora Institute of Technology">
+                    Flora Institute of Technology
+                  </option>
+                  <option value="MAEER's MIT College of Engineering">
+                    MAEER's MIT College of Engineering
+                  </option>
+                  <option value="Pune Vidyarthi Griha's COE (PVGCOE)">
+                    Pune Vidyarthi Griha's COE (PVGCOE)
+                  </option>
+                  <option value="G.H. Raisoni College of Engineering Pune">
+                    G.H. Raisoni College of Engineering Pune
+                  </option>
+                  <option value="G.H. Raisoni Institute of Engineering Pune">
+                    G.H. Raisoni Institute of Engineering Pune
+                  </option>
+                  <option value="Genba Sopanrao Moze College of Engineering">
+                    Genba Sopanrao Moze College of Engineering
+                  </option>
+                  <option value="Imperial College of Engineering and Research">
+                    Imperial College of Engineering and Research
+                  </option>
+                  <option value="International Institute of Engineering (IIE)">
+                    International Institute of Engineering (IIE)
+                  </option>
+                  <option value="Jayawant Shikshan Prasarak Mandal's COE">
+                    Jayawant Shikshan Prasarak Mandal's COE
+                  </option>
+                  <option value="Jaywant Institute of Technology Tathwade">
+                    Jaywant Institute of Technology Tathwade
+                  </option>
+                  <option value="Keystone School of Engineering">
+                    Keystone School of Engineering
+                  </option>
+                  <option value="KJ Somaiya College of Engineering Pune">
+                    KJ Somaiya College of Engineering Pune
+                  </option>
+                  <option
+                    value="Marathwada Institute of Technology (MIT Budhgaon)"
+                  >
+                    Marathwada Institute of Technology (MIT Budhgaon)
+                  </option>
+                  <option value="MKSSS's Cummins COE for Women">
+                    MKSSS's Cummins COE for Women
+                  </option>
+                  <option value="Nutan Maharashtra Institute of Engineering">
+                    Nutan Maharashtra Institute of Engineering
+                  </option>
+                  <option value="Alard College of Engineering Pune">
+                    Alard College of Engineering Pune
+                  </option>
+                  <option value="Anantrao Pawar College of Engineering Parvati">
+                    Anantrao Pawar College of Engineering Parvati
+                  </option>
+                  <option value="Annasaheb Dange College of Engineering Ashta">
+                    Annasaheb Dange College of Engineering Ashta
+                  </option>
+                  <option value="Datta Meghe College of Engineering Airoli">
+                    Datta Meghe College of Engineering Airoli
+                  </option>
+                  <option value="Dhole Patil College of Engineering Wagholi">
+                    Dhole Patil College of Engineering Wagholi
+                  </option>
+                  <option value="K. K. Wagh Institute of Engineering Nashik">
+                    K. K. Wagh Institute of Engineering Nashik
+                  </option>
+                  <option value="Pimpri Chinchwad Polytechnic College">
+                    Pimpri Chinchwad Polytechnic College
+                  </option>
+                  <option value="Progressive Education Society's MCE">
+                    Progressive Education Society's MCE
+                  </option>
+                  <option value="Rajarshi Shahu College of Engineering">
+                    Rajarshi Shahu College of Engineering
+                  </option>
+                  <option value="Sanjay Ghodawat University Pune">
+                    Sanjay Ghodawat University Pune
+                  </option>
+                  <option value="Savitribai Phule Pune University Engineering">
+                    Savitribai Phule Pune University Engineering
+                  </option>
+                  <option
+                    value="Shri Chhatrapati Shivaji Maharaj COE Ahmednagar"
+                  >
+                    Shri Chhatrapati Shivaji Maharaj COE Ahmednagar
+                  </option>
+                  <option
+                    value="Sharadchandra Pawar College of Engineering Dumbarwadi"
+                  >
+                    Sharadchandra Pawar College of Engineering Dumbarwadi
+                  </option>
+                  <option value="Siddhant College of Engineering">
+                    Siddhant College of Engineering
+                  </option>
+                  <option
+                    value="Shri Gulabrao Deokar College of Engineering Jalgaon"
+                  >
+                    Shri Gulabrao Deokar College of Engineering Jalgaon
+                  </option>
+                  <option
+                    value="Sinhgad Technical Education Society's Institutions"
+                  >
+                    Sinhgad Technical Education Society's Institutions
+                  </option>
+                  <option value="Smt. Kashibai Navale College of Engineering">
+                    Smt. Kashibai Navale College of Engineering
+                  </option>
+                  <option
+                    value="SPPU's Pune Institute of Engineering & Technology"
+                  >
+                    SPPU's Pune Institute of Engineering & Technology
+                  </option>
+                  <option value="Symbiosis University Pune Engineering">
+                    Symbiosis University Pune Engineering
+                  </option>
+                  <option
+                    value="Tatyasaheb Kore Institute of Engineering Warananagar"
+                  >
+                    Tatyasaheb Kore Institute of Engineering Warananagar
+                  </option>
+                  <option
+                    value="Vidya Pratishthan's Kamalnayan Bajaj Institute"
+                  >
+                    Vidya Pratishthan's Kamalnayan Bajaj Institute
+                  </option>
+                  <option value="Vijay Patil School of Engineering Mumbai">
+                    Vijay Patil School of Engineering Mumbai
+                  </option>
+                  <option value="Vidyalankar Institute of Technology Mumbai">
+                    Vidyalankar Institute of Technology Mumbai
+                  </option>
+                  <option value="Walchand College of Engineering Sangli">
+                    Walchand College of Engineering Sangli
+                  </option>
+                  <option
+                    value="Yeshwantrao Chavan College of Engineering Nagpur"
+                  >
+                    Yeshwantrao Chavan College of Engineering Nagpur
+                  </option>
+                  <option value="Zeal Education Society's Institutions">
+                    Zeal Education Society's Institutions
+                  </option>
+                </select>
+                <input type="hidden" id="college1Select" value="" />
+              </div>
+            </div>
+
+            <div class="compare-vs">VS</div>
+
+            <div class="compare-select-wrapper">
+              <label>College 2</label>
+              <div class="custom-dropdown" id="customDropdown2">
+                <div class="dropdown-selected" id="dropdownSelected2">
+                  <span class="selected-text">Select second college...</span>
+                  <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                <div class="dropdown-options" id="dropdownOptions2">
+                  <div class="dropdown-search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input
+                      type="text"
+                      class="dropdown-search"
+                      placeholder="Type to search..."
+                      autocomplete="off"
+                    />
+                  </div>
+                  <ul class="options-list"></ul>
+                </div>
+                <select style="display: none">
+                  <option value="">Select second college...</option>
+                  <!-- Top Government Colleges -->
+                  <option value="College of Engineering Pune (COEP)">
+                    College of Engineering Pune (COEP)
+                  </option>
+                  <option value="Government College of Engineering Pune">
+                    Government College of Engineering Pune
+                  </option>
+                  <!-- Top Private Colleges -->
+                  <option value="Pune Institute of Computer Technology (PICT)">
+                    Pune Institute of Computer Technology (PICT)
+                  </option>
+                  <option value="Vishwakarma Institute of Technology (VIT)">
+                    Vishwakarma Institute of Technology (VIT)
+                  </option>
+                  <option value="Maharashtra Institute of Technology (MIT)">
+                    Maharashtra Institute of Technology (MIT)
+                  </option>
+                  <option value="Symbiosis Institute of Technology (SIT)">
+                    Symbiosis Institute of Technology (SIT)
+                  </option>
+                  <option value="Cummins College of Engineering for Women">
+                    Cummins College of Engineering for Women
+                  </option>
+                  <option value="Army Institute of Technology (AIT)">
+                    Army Institute of Technology (AIT)
+                  </option>
+                  <!-- Bharati Vidyapeeth Group -->
+                  <option value="Bharati Vidyapeeth College of Engineering">
+                    Bharati Vidyapeeth College of Engineering
+                  </option>
+                  <option value="Bharati Vidyapeeth Deemed University COE">
+                    Bharati Vidyapeeth Deemed University COE
+                  </option>
+                  <!-- Sinhgad Group -->
+                  <option value="Sinhgad College of Engineering (SCOE)">
+                    Sinhgad College of Engineering (SCOE)
+                  </option>
+                  <option
+                    value="Sinhgad Institute of Technology (SIT Lonavala)"
+                  >
+                    Sinhgad Institute of Technology (SIT Lonavala)
+                  </option>
+                  <option
+                    value="Sinhgad Institute of Technology and Science (SITS)"
+                  >
+                    Sinhgad Institute of Technology and Science (SITS)
+                  </option>
+                  <option value="NBN Sinhgad School of Engineering">
+                    NBN Sinhgad School of Engineering
+                  </option>
+                  <option value="Sinhgad Academy of Engineering (SAE)">
+                    Sinhgad Academy of Engineering (SAE)
+                  </option>
+                  <option value="SKN Sinhgad College of Engineering">
+                    SKN Sinhgad College of Engineering
+                  </option>
+                  <!-- JSPM Group -->
+                  <option value="JSPM Rajarshi Shahu College of Engineering">
+                    JSPM Rajarshi Shahu College of Engineering
+                  </option>
+                  <option value="JSPM Narhe Technical Campus">
+                    JSPM Narhe Technical Campus
+                  </option>
+                  <option
+                    value="JSPM Bhivarabai Sawant Institute of Technology"
+                  >
+                    JSPM Bhivarabai Sawant Institute of Technology
+                  </option>
+                  <option
+                    value="JSPM's Imperial College of Engineering Wagholi"
+                  >
+                    JSPM's Imperial College of Engineering Wagholi
+                  </option>
+                  <!-- PCCOE Group -->
+                  <option
+                    value="PCCOE - Pimpri Chinchwad College of Engineering"
+                  >
+                    PCCOE - Pimpri Chinchwad College of Engineering
+                  </option>
+                  <option value="PCCOER - PCCoE Ravet">
+                    PCCOER - PCCoE Ravet
+                  </option>
+                  <!-- D.Y. Patil Group - ALL Campuses -->
+                  <option value="D.Y. Patil College of Engineering Akurdi">
+                    D.Y. Patil College of Engineering Akurdi
+                  </option>
+                  <option value="D.Y. Patil College of Engineering Pimpri">
+                    D.Y. Patil College of Engineering Pimpri
+                  </option>
+                  <option
+                    value="D.Y. Patil College of Engineering Lohegaon (Ajeenky)"
+                  >
+                    D.Y. Patil College of Engineering Lohegaon (Ajeenky)
+                  </option>
+                  <option value="D.Y. Patil College of Engineering Ambi">
+                    D.Y. Patil College of Engineering Ambi
+                  </option>
+                  <option
+                    value="D.Y. Patil Institute of Engineering & Technology Pimpri"
+                  >
+                    D.Y. Patil Institute of Engineering & Technology Pimpri
+                  </option>
+                  <option
+                    value="Ramrao Adik Institute of Technology (D.Y. Patil Nerul)"
+                  >
+                    Ramrao Adik Institute of Technology (D.Y. Patil Nerul)
+                  </option>
+                  <option
+                    value="Padmabhooshan Vasantdada Patil Institute of Technology"
+                  >
+                    Padmabhooshan Vasantdada Patil Institute of Technology
+                  </option>
+                  <option value="Dr. D.Y. Patil School of Engineering Lohegaon">
+                    Dr. D.Y. Patil School of Engineering Lohegaon
+                  </option>
+                  <option
+                    value="Padmashree Dr. D.Y. Patil Institute of Engineering Pimpri"
+                  >
+                    Padmashree Dr. D.Y. Patil Institute of Engineering Pimpri
+                  </option>
+                  <!-- Vishwakarma Group -->
+                  <option
+                    value="Vishwakarma Institute of Information Technology (VIIT)"
+                  >
+                    Vishwakarma Institute of Information Technology (VIIT)
+                  </option>
+                  <!-- Other Major Colleges -->
+                  <option value="AISSMS College of Engineering">
+                    AISSMS College of Engineering
+                  </option>
+                  <option value="AISSMS Institute of Information Technology">
+                    AISSMS Institute of Information Technology
+                  </option>
+                  <option value="Indira College of Engineering and Management">
+                    Indira College of Engineering and Management
+                  </option>
+                  <option value="Modern Education Society's COE (MESCOE)">
+                    Modern Education Society's COE (MESCOE)
+                  </option>
+                  <option value="PVG's College of Engineering Nasik Road">
+                    PVG's College of Engineering Nasik Road
+                  </option>
+                  <option value="Marathwada Mitra Mandal's COE (MMCOE)">
+                    Marathwada Mitra Mandal's COE (MMCOE)
+                  </option>
+                  <option value="Zeal College of Engineering and Research">
+                    Zeal College of Engineering and Research
+                  </option>
+                  <option value="Trinity College of Engineering and Research">
+                    Trinity College of Engineering and Research
+                  </option>
+                  <option value="Flora Institute of Technology">
+                    Flora Institute of Technology
+                  </option>
+                  <option value="MAEER's MIT College of Engineering">
+                    MAEER's MIT College of Engineering
+                  </option>
+                  <option value="Pune Vidyarthi Griha's COE (PVGCOE)">
+                    Pune Vidyarthi Griha's COE (PVGCOE)
+                  </option>
+                  <option value="G.H. Raisoni College of Engineering Pune">
+                    G.H. Raisoni College of Engineering Pune
+                  </option>
+                  <option value="G.H. Raisoni Institute of Engineering Pune">
+                    G.H. Raisoni Institute of Engineering Pune
+                  </option>
+                  <option value="Genba Sopanrao Moze College of Engineering">
+                    Genba Sopanrao Moze College of Engineering
+                  </option>
+                  <option value="Imperial College of Engineering and Research">
+                    Imperial College of Engineering and Research
+                  </option>
+                  <option value="International Institute of Engineering (IIE)">
+                    International Institute of Engineering (IIE)
+                  </option>
+                  <option value="Jayawant Shikshan Prasarak Mandal's COE">
+                    Jayawant Shikshan Prasarak Mandal's COE
+                  </option>
+                  <option value="Jaywant Institute of Technology Tathwade">
+                    Jaywant Institute of Technology Tathwade
+                  </option>
+                  <option value="Keystone School of Engineering">
+                    Keystone School of Engineering
+                  </option>
+                  <option value="KJ Somaiya College of Engineering Pune">
+                    KJ Somaiya College of Engineering Pune
+                  </option>
+                  <option
+                    value="Marathwada Institute of Technology (MIT Budhgaon)"
+                  >
+                    Marathwada Institute of Technology (MIT Budhgaon)
+                  </option>
+                  <option value="MKSSS's Cummins COE for Women">
+                    MKSSS's Cummins COE for Women
+                  </option>
+                  <option value="Nutan Maharashtra Institute of Engineering">
+                    Nutan Maharashtra Institute of Engineering
+                  </option>
+                  <option value="Alard College of Engineering Pune">
+                    Alard College of Engineering Pune
+                  </option>
+                  <option value="Anantrao Pawar College of Engineering Parvati">
+                    Anantrao Pawar College of Engineering Parvati
+                  </option>
+                  <option value="Annasaheb Dange College of Engineering Ashta">
+                    Annasaheb Dange College of Engineering Ashta
+                  </option>
+                  <option value="Datta Meghe College of Engineering Airoli">
+                    Datta Meghe College of Engineering Airoli
+                  </option>
+                  <option value="Dhole Patil College of Engineering Wagholi">
+                    Dhole Patil College of Engineering Wagholi
+                  </option>
+                  <option value="K. K. Wagh Institute of Engineering Nashik">
+                    K. K. Wagh Institute of Engineering Nashik
+                  </option>
+                  <option value="Pimpri Chinchwad Polytechnic College">
+                    Pimpri Chinchwad Polytechnic College
+                  </option>
+                  <option value="Progressive Education Society's MCE">
+                    Progressive Education Society's MCE
+                  </option>
+                  <option value="Rajarshi Shahu College of Engineering">
+                    Rajarshi Shahu College of Engineering
+                  </option>
+                  <option value="Sanjay Ghodawat University Pune">
+                    Sanjay Ghodawat University Pune
+                  </option>
+                  <option value="Savitribai Phule Pune University Engineering">
+                    Savitribai Phule Pune University Engineering
+                  </option>
+                  <option
+                    value="Shri Chhatrapati Shivaji Maharaj COE Ahmednagar"
+                  >
+                    Shri Chhatrapati Shivaji Maharaj COE Ahmednagar
+                  </option>
+                  <option
+                    value="Sharadchandra Pawar College of Engineering Dumbarwadi"
+                  >
+                    Sharadchandra Pawar College of Engineering Dumbarwadi
+                  </option>
+                  <option value="Siddhant College of Engineering">
+                    Siddhant College of Engineering
+                  </option>
+                  <option
+                    value="Shri Gulabrao Deokar College of Engineering Jalgaon"
+                  >
+                    Shri Gulabrao Deokar College of Engineering Jalgaon
+                  </option>
+                  <option
+                    value="Sinhgad Technical Education Society's Institutions"
+                  >
+                    Sinhgad Technical Education Society's Institutions
+                  </option>
+                  <option value="Smt. Kashibai Navale College of Engineering">
+                    Smt. Kashibai Navale College of Engineering
+                  </option>
+                  <option
+                    value="SPPU's Pune Institute of Engineering & Technology"
+                  >
+                    SPPU's Pune Institute of Engineering & Technology
+                  </option>
+                  <option value="Symbiosis University Pune Engineering">
+                    Symbiosis University Pune Engineering
+                  </option>
+                  <option
+                    value="Tatyasaheb Kore Institute of Engineering Warananagar"
+                  >
+                    Tatyasaheb Kore Institute of Engineering Warananagar
+                  </option>
+                  <option
+                    value="Vidya Pratishthan's Kamalnayan Bajaj Institute"
+                  >
+                    Vidya Pratishthan's Kamalnayan Bajaj Institute
+                  </option>
+                  <option value="Vijay Patil School of Engineering Mumbai">
+                    Vijay Patil School of Engineering Mumbai
+                  </option>
+                  <option value="Vidyalankar Institute of Technology Mumbai">
+                    Vidyalankar Institute of Technology Mumbai
+                  </option>
+                  <option value="Walchand College of Engineering Sangli">
+                    Walchand College of Engineering Sangli
+                  </option>
+                  <option
+                    value="Yeshwantrao Chavan College of Engineering Nagpur"
+                  >
+                    Yeshwantrao Chavan College of Engineering Nagpur
+                  </option>
+                  <option value="Zeal Education Society's Institutions">
+                    Zeal Education Society's Institutions
+                  </option>
+                </select>
+                <input type="hidden" id="college2Select" value="" />
+              </div>
+            </div>
+          </div>
+
+          <button id="startCompareBtn" class="start-compare-btn" disabled>
+            <i class="ri-bar-chart-grouped-line"></i>
+            <span>Start Comparison</span>
+          </button>
+
+          <div class="compare-info">
+            <p>
+              <strong>Comparison includes:</strong> Placements, Fees, NIRF
+              Ranking, AICTE/NBA Accreditation, Hostel Facilities,
+              Infrastructure, Faculty, Cutoffs, and Personalized
+              Recommendations.
+            </p>
           </div>
         </div>
       </div>
@@ -318,7 +933,7 @@
       <div class="sidebar-header">
         <div class="sidebar-brand">
           <img
-            src="final-chatbot-logo.png"
+            src="assets/images/final-chatbot-logo.png"
             alt="chatbot logo"
             class="sidebar-logo"
           />
@@ -372,26 +987,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Saved Conversations -->
-        <div class="saved-section">
-          <div class="section-header">
-            <h4><i class="ri-bookmark-line"></i> Saved Chats</h4>
-            <button class="expand-btn" id="savedExpandBtn">
-              <i class="ri-arrow-down-s-line"></i>
-            </button>
-          </div>
-          <div class="saved-content" id="savedContent">
-            <div class="saved-item">
-              <i class="ri-chat-3-line"></i>
-              <span>COEP Admission Process</span>
-            </div>
-            <div class="saved-item">
-              <i class="ri-chat-3-line"></i>
-              <span>PICT Fee Structure</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Sidebar Footer -->
@@ -406,13 +1001,17 @@
             <span>About</span>
           </button>
           <button
-            class="footer-btn settings-btn"
-            id="settingsButton"
-            title="Settings"
+            class="footer-btn language-btn"
+            id="sidebarLanguageButton"
+            title="Change Language"
           >
-            <i class="ri-settings-3-line"></i>
-            <span>Settings</span>
+            <i class="ri-translate-2"></i>
+            <span>Language</span>
           </button>
+        </div>
+        <div class="keyboard-shortcut-hint">
+          <i class="ri-keyboard-line"></i>
+          <span>Ctrl+Shift+O - New Chat</span>
         </div>
       </div>
     </div>
@@ -425,18 +1024,86 @@
         </button>
         <a href="index.html" class="vidhur-name">VIDHUR</a>
       </div>
-      <div class="features">
-        <button id="newChatButton" style="border: 1px solid black">
+
+      <!-- Desktop Features -->
+      <div class="features desktop-features">
+        <button
+          id="newChatButton"
+          style="border: 1px solid black"
+          title="New Chat (Ctrl+Shift+O)"
+        >
           <i class="ri-chat-new-line"> New chat</i>
         </button>
-        <button>Virtual College Tour</button>
-        <button>Financial Aid Calculator</button>
-        <button>Compare Tool</button>
+        <button class="coming-soon-btn" data-feature="tour">
+          Virtual College Tour
+        </button>
+        <button class="coming-soon-btn" data-feature="calculator">
+          Financial Aid Calculator
+        </button>
+        <button id="compareToolButton" title="Compare Colleges">
+          <i class="ri-scales-3-line"></i> Compare Tool
+        </button>
+        <button id="headerLanguageButton" title="Change Language">
+          <i class="ri-translate-2"></i> Language
+        </button>
       </div>
-      <button class="hamburger" onclick="toggleMenu()">
-        <i class="ri-arrow-drop-down-fill"></i>
-      </button>
+
+      <!-- Mobile Controls -->
+      <div class="mobile-controls">
+        <button
+          id="mobileLanguageButton"
+          class="mobile-lang-btn"
+          title="Change Language"
+        >
+          <i class="ri-translate-2"></i>
+        </button>
+        <button
+          id="mobileFeaturesButton"
+          class="mobile-features-btn"
+          title="Features"
+        >
+          <i class="ri-apps-2-line"></i>
+          <span>Features</span>
+        </button>
+      </div>
+
+      <!-- Mobile Features Dropdown -->
+      <div id="mobileFeaturesDropdown" class="mobile-features-dropdown">
+        <button
+          id="mobileNewChatButton"
+          class="mobile-feature-item"
+          title="New Chat"
+        >
+          <i class="ri-chat-new-line"></i>
+          <span>New Chat</span>
+        </button>
+        <button class="mobile-feature-item coming-soon-btn" data-feature="tour">
+          <i class="ri-road-map-line"></i>
+          <span>Virtual College Tour</span>
+        </button>
+        <button
+          class="mobile-feature-item coming-soon-btn"
+          data-feature="calculator"
+        >
+          <i class="ri-calculator-line"></i>
+          <span>Financial Aid Calculator</span>
+        </button>
+        <button
+          id="mobileCompareToolButton"
+          class="mobile-feature-item"
+          title="Compare Colleges"
+        >
+          <i class="ri-scales-3-line"></i>
+          <span>Compare Tool</span>
+        </button>
+      </div>
     </nav>
+
+    <!-- Coming Soon Toast -->
+    <div id="comingSoonToast" class="coming-soon-toast">
+      <i class="ri-time-line"></i>
+      <span>Coming Soon!</span>
+    </div>
 
     <!-- This is code for chatbot interface -->
     <div class="chat-container" id="chat-container">
@@ -446,7 +1113,7 @@
 
       <div id="welcome-page">
         <img
-          src="final-chatbot-logo.png"
+          src="assets/images/final-chatbot-logo.png"
           alt="welcome-logo"
           class="welcome-logo"
         />
@@ -459,27 +1126,27 @@
 
         <div id="suggestions">
           <div class="card">
-            <img src="collage.png" alt="Collages Logo" />
+            <img src="assets/images/collage.png" alt="Collages Logo" />
             <a href="#" class="suggestion" data-prompt="college"
               >Which are the top 5 engineering colleges in Pune based on
               placement, results, and facilities?</a
             >
           </div>
           <div class="card">
-            <img src="degree.png" alt="degree Logo" />
+            <img src="assets/images/degree.png" alt="degree Logo" />
             <a href="#" class="suggestion" data-prompt="college"
               >What are the admission requirements for Computer Engineering at
               COEP Pune?</a
             >
           </div>
           <div class="card">
-            <img src="fees.png" alt="fees Logo" />
+            <img src="assets/images/fees.png" alt="fees Logo" />
             <a href="#" class="suggestion" data-prompt="college"
               >What is the annual fees structure for B.Tech at PICT Pune?</a
             >
           </div>
           <div class="card">
-            <img src="alumni.png" alt="alumni Logo" />
+            <img src="assets/images/alumni.png" alt="alumni Logo" />
             <a href="#" class="suggestion" data-prompt="college"
               >What is the average placement package at VIT Pune for Computer
               Science students?</a
@@ -531,9 +1198,21 @@
       </div>
     </div>
 
-    <script src="chatbot.js"></script>
+    <script src="config.js"></script>
+    <script src="src/js/chatbot.js"></script>
   </body>
   <footer>
-    <p>&copy; This chatbot is generated by DataDynamos!!</p>
+    <p>
+      &copy; This chatbot is created by Amol Rakh
+      <a
+        href="https://github.com/dev-amolrakh"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="github-link"
+        title="GitHub Profile"
+      >
+        <i class="ri-github-fill"></i>
+      </a>
+    </p>
   </footer>
 </html>

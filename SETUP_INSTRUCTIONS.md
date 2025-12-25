@@ -24,10 +24,14 @@ Your chatbot has been upgraded with AI capabilities using Groq's free LLM API. I
 
 ### Step 2: Configure the Chatbot
 
-1. Open `chatbot.js` file
-2. Find line 2: `const GROQ_API_KEY = 'YOUR_GROQ_API_KEY_HERE';`
-3. Replace `YOUR_GROQ_API_KEY_HERE` with your actual API key
-4. Save the file
+1. Open `src/js/chatbot.js` file
+2. Find the `GROQ_API_KEY` constant near the top and replace `YOUR_API_KEY` with your actual Groq API key
+3. Save the file
+4. (Optional) Run `scripts/organize-files.ps1` to move images into `assets/images` and archive development files:
+
+```powershell
+pwsh scripts\organize-files.ps1
+```
 
 ### Step 3: Test Your Chatbot
 
@@ -77,15 +81,15 @@ The AI knows about these Pune engineering colleges:
    - **Node.js**: `npx serve .`
    - **VS Code**: Install "Live Server" extension
 
-3. **Test with debug page:**
-   - Open `test-server.html` to diagnose issues
-   - Check console for detailed error messages
+3. **Test with debug page (archived):**
+   - A debug page `test-server.html` has been moved to the `archive/` folder for reference: `archive/test-server.html`
+   - Prefer checking the browser console for live diagnostics
 
 ### If the chatbot isn't responding:
 
 1. **Open browser console** (F12 → Console) and look for errors
-2. **Check API key**: Make sure it's properly set in `chatbot.js`
-3. **Test API connection**: Use the debug page (`test-server.html`)
+2. **Check API key**: Make sure it's properly set in `src/js/chatbot.js`
+3. **Test API connection**: Use the debug page in `archive/test-server.html` or check the browser console
 4. **Verify internet connection**
 5. **The enhanced fallback system** now provides detailed responses even offline
 
@@ -108,7 +112,7 @@ The AI knows about these Pune engineering colleges:
 
 ### Change the AI Model:
 
-In `chatbot.js`, modify line 4:
+In `src/js/chatbot.js`, modify line 4:
 
 ```javascript
 const MODEL_NAME = "llama-3.2-11b-text-preview"; // Current default (recommended)
@@ -120,7 +124,7 @@ const MODEL_NAME = "llama-3.2-90b-text-preview"; // Most capable (slower)
 
 ### Adjust Response Style:
 
-Modify the `SYSTEM_PROMPT` in `chatbot.js` to change how the AI responds.
+Modify the `SYSTEM_PROMPT` in `src/js/chatbot.js` to change how the AI responds.
 
 ### Add More Colleges:
 
